@@ -1,0 +1,215 @@
+<?php
+
+namespace AppBundle\Controller;
+
+use AppBundle\Entity\Trip;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CountryType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Request;
+
+
+class TripController extends Controller
+{
+    /**
+     * @Route("/trips", name="trips_list")
+     */
+    public function listAction(Request $request)
+    {
+        $trips = $this->getDoctrine()
+            ->getRepository('AppBundle:Trip')
+            ->findAll();
+        return $this->render('trip/index.html.twig', array(
+            'trips' => $trips
+        ));
+    }
+
+    /**
+     * @Route("/trip/creer", name="trip_create")
+     */
+    public function createAction(Request $request)
+    {
+        $trip = new Trip();
+        $form = $this->createFormBuilder($trip)
+            ->add('title', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter un titre...')))
+            ->add('description', TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter une description...')))
+            ->add('date_departure', DateTimeType::class, array('attr' => array('class' => 'formcontrol', 'style' => 'margin-bottom:15px')))
+            ->add('destination', CountryType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('type', ChoiceType::class, array('choices' => array("Auto-stop" => "Auto-stop",
+                "Aventure" => "Aventure",
+                "Camping sauvage" => "Camping sauvage",
+                "Circuit touristique" => "Circuit touristique",
+                "Evasion" => "Evasion",
+                "Excursion" => "Excursion",
+                "Exploration" => "Exploration",
+                "Expedition" => "Expédition",
+                "Navigation" => "Navigation",
+                "Promenade" => "Promenade",
+                "Randonnee pedestre" => "Randonnée pédestre",
+                "Road trip" => "Road trip",
+                "Tour du monde" => "Tour du monde",
+                "Voyage experimental" => "Voyage expérimental",
+            ), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('difficulty', ChoiceType::class, array('choices' => array('Facile' => 'Facile', 'Moyen' => 'Moyen', 'Dur' => 'Dur'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('price', ChoiceType::class, array('choices' => array('Bas' => 'Bas', 'Moyennement bas' => 'Moyennement bas', 'Moyen' => 'Moyen', 'Moyennement eleve' => 'Moyennement élevé', 'Elevé' => 'Élevé'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('save', SubmitType::class, array('label' => 'Créer le voyage', 'attr' => array('class' => 'btn btn-primary', 'style' => 'margin-bottom:15px')))
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // get data
+            $title = $form['title']->getData();
+            $description = $form['description']->getData();
+            $dateDeparture = $form['date_departure']->getData();
+            $destination = $form['destination']->getData();
+            $type = $form['type']->getData();
+            $difficulty = $form['difficulty']->getData();
+            $price = $form['price']->getData();
+
+            $now = new \DateTime('now');
+
+            $trip->setTitle($title);
+            $trip->setDescription($description);
+            $trip->setDateDeparture($dateDeparture);
+            $trip->setDestination($destination);
+            $trip->setType($type);
+            $trip->setDifficulty($difficulty);
+            $trip->setPrice($price);
+            $trip->setCreateDate($now);
+
+            $em = $this->getDoctrine()->getManager();
+
+            $em->persist($trip);
+            $em->flush();
+
+            $this->addFlash(
+                'notice', 'Voyage Ajoutée avec succes !'
+            );
+            return $this->redirectToRoute('trips_list');
+        }
+
+        return $this->render('trip/create.html.twig', array(
+            'form' => $form->createView()));
+    }
+
+    /**
+     * @Route("/trip/edit/{id}", name="trip_edit")
+     */
+    public function editAction($id, Request $request)
+    {
+        $trip = $this->getDoctrine()
+            ->getRepository('AppBundle:Trip')
+            ->find($id);
+
+        $now = new \DateTime('now');
+
+        $trip->setTitle($trip->getTitle());
+        $trip->setDescription($trip->getDescription());
+        $trip->setDateDeparture($trip->getDateDeparture());
+        $trip->setDestination($trip->getDestination());
+        $trip->setType($trip->getType());
+        $trip->setDifficulty($trip->getDifficulty());
+        $trip->setPrice($trip->getPrice());
+        $trip->setCreateDate($now);
+
+        $form = $this->createFormBuilder($trip)
+            ->add('title', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('description', TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('date_departure', DateTimeType::class, array('attr' => array('class' => 'formcontrol', 'style' => 'margin-bottom:15px')))
+            ->add('destination', CountryType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('type', ChoiceType::class, array('choices' => array("Auto-stop" => "Auto-stop",
+                "Aventure" => "Aventure",
+                "Camping sauvage" => "Camping sauvage",
+                "Circuit touristique" => "Circuit touristique",
+                "Evasion" => "Evasion",
+                "Excursion" => "Excursion",
+                "Exploration" => "Exploration",
+                "Expédition" => "Expédition",
+                "Navigation" => "Navigation",
+                "Promenade" => "Promenade",
+                "Randonnée pédestre" => "Randonnée pédestre",
+                "Road trip" => "Road trip",
+                "Tour du monde" => "Tour du monde",
+                "Voyage expérimental" => "Voyage expérimental",
+            ), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('difficulty', ChoiceType::class, array('choices' => array('Facile' => 'Facile', 'Moyen' => 'Moyen', 'Dur' => 'Dur'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('price', ChoiceType::class, array('choices' => array('Bas' => 'Bas', 'Moyennement bas' => 'Moyennement bas', 'Moyen' => 'Moyen', 'Moyennement eleve' => 'Moyennement élevé', 'Elevé' => 'Élevé'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('save', SubmitType::class, array('label' => 'Modifier le voyage', 'attr' => array('class' => 'btn btn-primary', 'style' => 'margin-bottom:15px')))
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // get data
+            $title = $form['title']->getData();
+            $description = $form['description']->getData();
+            $dateDeparture = $form['date_departure']->getData();
+            $destination = $form['destination']->getData();
+            $type = $form['type']->getData();
+            $difficulty = $form['difficulty']->getData();
+            $price = $form['price']->getData();
+
+            $em = $this->getDoctrine()->getManager();
+            $trip = $em->getRepository('AppBundle:Trip')->find($id);
+
+            $trip->setTitle($title);
+            $trip->setDescription($description);
+            $trip->setDateDeparture($dateDeparture);
+            $trip->setDestination($destination);
+            $trip->setType($type);
+            $trip->setDifficulty($difficulty);
+            $trip->setPrice($price);
+            $trip->setCreateDate($now);
+
+            $em->flush();
+
+            $this->addFlash(
+                'notice',
+                'Voyage modifier'
+            );
+            return $this->redirectToRoute('trips_list');
+        }
+
+        return $this->render('trip/edit.html.twig', array(
+            'trip' => $trip,
+            'form' => $form->createView()
+        ));
+    }
+
+    /**
+     * @Route("/trip/details/{id}", name="trip_details")
+     */
+    public function detailsAction($id)
+    {
+        $trip = $this->getDoctrine()
+            ->getRepository('AppBundle:Trip')
+            ->find($id);
+        return $this->render('trip/details.html.twig', array(
+            'trip' => $trip
+        ));
+    }
+
+    /**
+     * @Route("/trip/delete/{id}", name="trip_delete")
+     */
+    public function deleteAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $trip = $em->getRepository('AppBundle:Trip')->find($id);
+
+        $em->remove($trip);
+        $em->flush();
+
+        $this->addFlash(
+            'notice',
+            'Trip Removed'
+        );
+        return $this->redirectToRoute('trips_list');
+    }
+}

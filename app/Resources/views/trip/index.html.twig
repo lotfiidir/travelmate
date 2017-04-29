@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+{% block title %}Travel Mate{% endblock %}
+{% block body %}
+    <section>
+        <div class="col-md-12">
+            <h2>section pour rechercher les futures voyages</h2>
+        </div>
+    </section>
+    {% for trip in trips %}
+        <div class="col-md-4">
+            <h4>{{ trip.title }}</h4>
+            <p>{{ trip.description[:100] }}</p>
+            <p>{{ trip.destination|countryName }}</p>
+            <p>{{ trip.dateDeparture| date("d.m.Y") }}</p>
+            <a href="trip/details/{{ trip.id }}" class="btn btn-primary">Voir</a>
+        </div>
+    {% endfor %}
+{% endblock %}
