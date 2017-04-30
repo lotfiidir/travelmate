@@ -5,6 +5,9 @@
     <a class="btn btn-default" href="/trips">Retour à la liste</a>
     <hr>
     <h2 class="page-header">{{ trip.title }}</h2>
+    {% if (trip.imageTrip) %}
+        <img src="../../uploads/imageTrips/{{ trip.imageTrip }}" alt="">
+    {% endif %}
     <div class="row">
         <div class="col-md-6">
             <ul class="list-group">
