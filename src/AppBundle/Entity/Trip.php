@@ -77,7 +77,7 @@ class Trip
      * @ORM\Column(type="string")
      *
      * @Assert\NotBlank(message="Veuillez ajoutez une image.")
-     * @Assert\File(mimeType={ "image/jpeg", "image/png" })
+     * @Assert\File(mimeTypes={ "image/jpeg", "image/png" })
      *
      */
     private $imageTrip;
