@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -57,6 +58,7 @@ class TripController extends Controller
             ), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('difficulty', ChoiceType::class, array('choices' => array('Facile' => 'Facile', 'Moyen' => 'Moyen', 'Dur' => 'Dur'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('price', ChoiceType::class, array('choices' => array('Bas' => 'Bas', 'Moyennement bas' => 'Moyennement bas', 'Moyen' => 'Moyen', 'Moyennement eleve' => 'Moyennement élevé', 'Elevé' => 'Élevé'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            -add('image', FileType::class, array('label' => 'Image du voyage'))
             ->add('save', SubmitType::class, array('label' => 'Créer le voyage', 'attr' => array('class' => 'btn btn-primary', 'style' => 'margin-bottom:15px')))
             ->getForm();
 
@@ -71,6 +73,12 @@ class TripController extends Controller
             $type = $form['type']->getData();
             $difficulty = $form['difficulty']->getData();
             $price = $form['price']->getData();
+            $file = $trip->getImageTrip();
+            $fileName = md5(uniqid()).'.'.$file->guessExtension();
+            $file->move(
+                $this->getParameter('imagesTrip_directory'),
+                $fileName
+            );
 
             $now = new \DateTime('now');
 
@@ -81,6 +89,7 @@ class TripController extends Controller
             $trip->setType($type);
             $trip->setDifficulty($difficulty);
             $trip->setPrice($price);
+            $trip->setImageTrip($fileName);
             $trip->setCreateDate($now);
 
             $em = $this->getDoctrine()->getManager();
