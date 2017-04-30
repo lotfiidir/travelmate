@@ -9,6 +9,9 @@
     {% for trip in trips %}
         <div class="col-md-4">
             <h4>{{ trip.title }}</h4>
+            {% if (trip.imageTrip) %}
+                <img class="col-md-4" src="uploads/imageTrips/{{ trip.imageTrip }}" alt="">
+            {% endif %}
             <p>{{ trip.description[:100] }}</p>
             <p>{{ trip.destination|countryName }}</p>
             <p>{{ trip.dateDeparture| date("d.m.Y") }}</p>
