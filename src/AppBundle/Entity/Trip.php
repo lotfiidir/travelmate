@@ -73,9 +73,13 @@ class Trip
     /**
      * @var string
      *
-     * @ORM\Column(name="", type="")
+     * @ORM\Column(type="string")
+     *
+     * @Assert\NotBlank(message="Veuillez ajoutez une image.")
+     * @Assert\File(mimeType={ "image/jpeg", "image/png" })
+     *
      */
-   /* private $imageTrip;*/
+    private $imageTrip;
 
     /**
      * @var \DateTime
@@ -270,18 +274,18 @@ class Trip
      *
      * @return Trip
      */
-   /* public function setImageTrip($imageTrip)
+    public function setImageTrip($imageTrip)
     {
         $this->imageTrip = $imageTrip;
-    }*/
+    }
 
     /**
      * @return ....
      */
-   /* public function getImageTrip()
+    public function getImageTrip()
     {
         return $this->imageTrip;
-    }*/
+    }
 
     /**
      * Get createDate
