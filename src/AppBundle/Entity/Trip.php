@@ -268,21 +268,13 @@ class Trip
         return $this;
     }
 
-    /**
-     * Set imageTrip
-     *
-     * @param ..... $imageTrip
-     *
-     * @return Trip
-     */
+
     public function setImageTrip($imageTrip)
     {
         $this->imageTrip = $imageTrip;
+        return $this;
     }
 
-    /**
-     * @return ....
-     */
     public function getImageTrip()
     {
         return $this->imageTrip;
