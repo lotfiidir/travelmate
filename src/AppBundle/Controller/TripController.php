@@ -58,7 +58,7 @@ class TripController extends Controller
             ), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('difficulty', ChoiceType::class, array('choices' => array('Facile' => 'Facile', 'Moyen' => 'Moyen', 'Dur' => 'Dur'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('price', ChoiceType::class, array('choices' => array('Bas' => 'Bas', 'Moyennement bas' => 'Moyennement bas', 'Moyen' => 'Moyen', 'Moyennement eleve' => 'Moyennement élevé', 'Elevé' => 'Élevé'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
-            ->add('imageTrip', FileType::class, array('label' => 'Image du voyage', 'attr' => array('class' => 'file', 'style' => 'margin-bottom:15px')))
+            ->add('imageTrip', FileType::class, array('data_class' => null, 'label' => 'Image du voyage', 'attr' => array('class' => 'file', 'style' => 'margin-bottom:15px')))
             ->add('save', SubmitType::class, array('label' => 'Créer le voyage', 'attr' => array('class' => 'btn btn-primary', 'style' => 'margin-bottom:15px')))
             ->getForm();
 
@@ -74,7 +74,7 @@ class TripController extends Controller
             $difficulty = $form['difficulty']->getData();
             $price = $form['price']->getData();
             $file = $trip->getImageTrip();
-            $fileName = md5(uniqid()).'.'.$file->guessExtension();
+            $fileName = md5(uniqid()) . '.' . $file->guessExtension();
             $file->move(
                 $this->getParameter('imagesTrip_directory'),
                 $fileName
@@ -112,10 +112,10 @@ class TripController extends Controller
      */
     public function editAction($id, Request $request)
     {
+
         $trip = $this->getDoctrine()
             ->getRepository('AppBundle:Trip')
             ->find($id);
-
         $now = new \DateTime('now');
 
         $trip->setTitle($trip->getTitle());
@@ -125,7 +125,9 @@ class TripController extends Controller
         $trip->setType($trip->getType());
         $trip->setDifficulty($trip->getDifficulty());
         $trip->setPrice($trip->getPrice());
+        $trip->setImageTrip($trip->getImageTrip());
         $trip->setCreateDate($now);
+        $oldfile = $trip->getImageTrip();
 
         $form = $this->createFormBuilder($trip)
             ->add('title', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
@@ -149,8 +151,10 @@ class TripController extends Controller
             ), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('difficulty', ChoiceType::class, array('choices' => array('Facile' => 'Facile', 'Moyen' => 'Moyen', 'Dur' => 'Dur'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('price', ChoiceType::class, array('choices' => array('Bas' => 'Bas', 'Moyennement bas' => 'Moyennement bas', 'Moyen' => 'Moyen', 'Moyennement eleve' => 'Moyennement élevé', 'Elevé' => 'Élevé'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('imageTrip', FileType::class, array('data_class' => null, 'label' => 'Image du voyage', 'attr' => array('class' => 'btn btn-file', 'style' => 'margin-bottom:15px')))
             ->add('save', SubmitType::class, array('label' => 'Modifier le voyage', 'attr' => array('class' => 'btn btn-primary', 'style' => 'margin-bottom:15px')))
             ->getForm();
+
 
         $form->handleRequest($request);
 
@@ -163,6 +167,21 @@ class TripController extends Controller
             $type = $form['type']->getData();
             $difficulty = $form['difficulty']->getData();
             $price = $form['price']->getData();
+            $file = $trip->getImageTrip();
+
+            if ($oldfile !== $file) {
+                $oldFile = $this->getParameter('imagesTrip_directory') . "/$oldfile";
+                if ($oldFile !== null) {
+                    unlink($oldFile);
+                }
+                $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+                $file->move(
+                    $this->getParameter('imagesTrip_directory'),
+                    $fileName
+                );
+            }else {
+                $fileName = $oldfile;
+            }
 
             $em = $this->getDoctrine()->getManager();
             $trip = $em->getRepository('AppBundle:Trip')->find($id);
@@ -174,6 +193,7 @@ class TripController extends Controller
             $trip->setType($type);
             $trip->setDifficulty($difficulty);
             $trip->setPrice($price);
+            $trip->setImageTrip($fileName);
             $trip->setCreateDate($now);
 
             $em->flush();
@@ -199,6 +219,7 @@ class TripController extends Controller
         $trip = $this->getDoctrine()
             ->getRepository('AppBundle:Trip')
             ->find($id);
+
         return $this->render('trip/details.html.twig', array(
             'trip' => $trip
         ));

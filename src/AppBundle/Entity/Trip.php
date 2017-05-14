@@ -78,6 +78,7 @@ class Trip
      *
      * @Assert\NotBlank(message="Veuillez ajoutez une image.")
      * @Assert\File(mimeTypes={ "image/jpeg", "image/png" })
+     * @Assert\Image(minWidth = 200, maxWidth = 1200, minHeight = 200, maxHeight = 800)
      *
      */
     private $imageTrip;
