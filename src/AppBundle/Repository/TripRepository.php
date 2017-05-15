@@ -10,4 +10,68 @@ namespace AppBundle\Repository;
  */
 class TripRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findTripByString($str)
+    {
+        /*$words = explode(" ", $str);
+        var_dump($words);
+        $query = "SELECT t
+                 FROM AppBundle:Trip t
+                 WHERE 1";
+        foreach ($words as $word) {
+            $query .= "t.title LIKE :word
+     OR t.description LIKE :word
+     OR t.destination LIKE :word";
+        }*/
+        /*return $this->getEntityManager()
+            ->createQuery(
+                'SELECT t
+                 FROM AppBundle:Trip t
+                 WHERE t.title LIKE :str
+                 OR t.description LIKE :str
+                 OR t.destination LIKE :str'
+            )
+            ->setParameter('str', '%' . $str . '%')
+            ->getResult();*/
+
+
+        $words = explode(" ", trim($str));
+        $clauses = array();
+        $i = 0;
+        foreach ($words as $word) {
+            // for every word make new search query and parameter
+            $parameters[":param" . $i] = "%" . $word . "%";
+            if ($i == 0) {
+                $clauses = "t.title LIKE :param" . $i . " OR t.description LIKE :param" . $i . " OR t.destination LIKE :param" . $i;
+            } else {
+                $clauses .= " OR t.title LIKE :param" . $i . " OR t.description LIKE :param" . $i . " OR t.destination LIKE :param" . $i;
+            }
+            $i++;
+        }
+
+        $query = $this->createQueryBuilder('t')
+            ->where($clauses)
+            ->setParameters($parameters)
+            ->getQuery();
+        $trips = $query->getResult();
+        return $trips;
+
+        /*return $this->createQueryBuilder('t')
+            ->select('t')
+            ->from('AppBundle\Entity\Trip', 't')
+            ->where($clauses)
+            ->setParameters($parameters)
+            ->getResult();
+*/
+
+
+// createQueryBuilder() automatically selects FROM AppBundle:Product
+// and aliases it to "p"
+        $query = $repository->createQueryBuilder('p')
+            ->where('p.price > :price')
+            ->setParameter('price', '19.99')
+            ->orderBy('p.price', 'ASC')
+            ->getQuery();
+
+        $products = $query->getResult();
+    }
 }

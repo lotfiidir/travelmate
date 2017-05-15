@@ -25,6 +25,7 @@ class TripController extends Controller
         $trips = $this->getDoctrine()
             ->getRepository('AppBundle:Trip')
             ->findAll();
+
         return $this->render('trip/index.html.twig', array(
             'trips' => $trips
         ));
