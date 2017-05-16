@@ -33,8 +33,11 @@ class TripRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('str', '%' . $str . '%')
             ->getResult();*/
 
+        $string = str_replace(' ', '-', $str);
 
-        $words = explode(" ", trim($str));
+        $stringClean = preg_replace('/[^A-Za-z0-9\-]/', ' ', $string);
+        //        $string = str_replace(' ', ',', $stringClean);
+        $words = explode(" ", trim($stringClean));
         $clauses = array();
         $i = 0;
         foreach ($words as $word) {
@@ -66,12 +69,12 @@ class TripRepository extends \Doctrine\ORM\EntityRepository
 
 // createQueryBuilder() automatically selects FROM AppBundle:Product
 // and aliases it to "p"
-        $query = $repository->createQueryBuilder('p')
+       /* $query = $repository->createQueryBuilder('p')
             ->where('p.price > :price')
             ->setParameter('price', '19.99')
             ->orderBy('p.price', 'ASC')
             ->getQuery();
 
-        $products = $query->getResult();
+        $products = $query->getResult();*/
     }
 }
