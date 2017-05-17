@@ -3,6 +3,18 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Trip;
+use Ivory\GoogleMap\Base\Coordinate;
+use Ivory\GoogleMap\Event\Event;
+use Ivory\GoogleMap\Map;
+use Ivory\GoogleMap\Overlay\Animation;
+use Ivory\GoogleMap\Overlay\Circle;
+use Ivory\GoogleMap\Overlay\Icon;
+use Ivory\GoogleMap\Overlay\Marker;
+use Ivory\GoogleMap\Overlay\MarkerShape;
+use Ivory\GoogleMap\Overlay\MarkerShapeType;
+use Ivory\GoogleMap\Overlay\Symbol;
+use Ivory\GoogleMap\Overlay\SymbolPath;
+use Ivory\GoogleMapBundle\Form\Type;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -62,6 +74,20 @@ class TripController extends Controller
             ->add('imageTrip', FileType::class, array('data_class' => null, 'label' => 'Image du voyage', 'attr' => array('class' => 'file', 'style' => 'margin-bottom:15px')))
             ->add('save', SubmitType::class, array('label' => 'Créer le voyage', 'attr' => array('class' => 'btn btn-primary', 'style' => 'margin-bottom:15px')))
             ->getForm();
+        $map = new Map();
+        $marker1 = new Marker(new Coordinate(42.1799151,-0.3684824));
+        $marker2 = new Marker(new Coordinate(50,-0.3684824));
+        $marker3 = new Marker(new Coordinate(41.8333925,-88.0123449));
+        //$map->getOverlayManager()->addMarkers([$marker1, $marker2]);
+        $map->setAutoZoom(true);
+        $map->getOverlayManager()->addMarker($marker1);
+        $map->getOverlayManager()->addMarker($marker2);
+        $map->getOverlayManager()->addMarker($marker3);
+//        $map->setCenter(new Coordinate(49.1799151,-0.3684824));
+        $map->setMapOption('zoom', 13);
+//        var_dump($map);
+
+        //$event = new Event($marker->getVariable(),'click','function(){alert("Marker clicked"}', true);
 
         $form->handleRequest($request);
 
@@ -105,7 +131,8 @@ class TripController extends Controller
         }
 
         return $this->render('trip/create.html.twig', array(
-            'form' => $form->createView()));
+            'form' => $form->createView(),
+            'map' => $map));
     }
 
     /**
