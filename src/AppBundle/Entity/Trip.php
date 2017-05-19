@@ -46,7 +46,7 @@ class Trip
     /**
      * @var string
      *
-     * @ORM\Column(name="destination", type="string", length=255)
+     * @ORM\Column(name="destination", type="text", length=255)
      */
     private $destination;
 
@@ -83,6 +83,13 @@ class Trip
      */
     private $imageTrip;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="traces", type="text")
+     */
+
+    private $traces;
     /**
      * @var \DateTime
      *
@@ -269,6 +276,10 @@ class Trip
         return $this;
     }
 
+    public function getImageTrip()
+    {
+        return $this->imageTrip;
+    }
 
     public function setImageTrip($imageTrip)
     {
@@ -276,9 +287,22 @@ class Trip
         return $this;
     }
 
-    public function getImageTrip()
+    /**
+     * @return mixed
+     */
+    public function getTraces()
     {
-        return $this->imageTrip;
+        return $this->traces;
+    }
+
+    /**
+     * @param mixed $traces
+     *
+     * @return Trip
+     */
+    public function setTraces($traces)
+    {
+        $this->traces = $traces;
     }
 
     /**

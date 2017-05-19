@@ -44,7 +44,7 @@ class SearchController extends Controller
         return new Response(json_encode($result));
     }
 
-    /*
+    /**
      * @Route("trips/search", name="search")
      * @Method("GET")
      */

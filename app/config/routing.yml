@@ -6,3 +6,7 @@ search:
     path:     trips/search
     defaults: { _controller: AppBundle:Search:show }
 
+trip_create_ajax:
+    path:      creer
+    defaults:  { _controller: AppBundle:Trip:getTrace }
+

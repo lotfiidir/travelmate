@@ -2975,7 +2975,7 @@
     </column>
     <column id="663" parent="69" name="destination">
       <Position>4</Position>
-      <DataType>varchar(255)|0</DataType>
+      <DataType>tinytext|0</DataType>
       <NotNull>1</NotNull>
     </column>
     <column id="664" parent="69" name="type">
@@ -3008,7 +3008,12 @@
       <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="670" parent="69" name="PRIMARY">
+    <column id="670" parent="69" name="traces">
+      <Position>11</Position>
+      <DataType>longtext|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <key id="671" parent="69" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>

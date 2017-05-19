@@ -25,6 +25,11 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Serializer;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 
 class TripController extends Controller
@@ -72,22 +77,50 @@ class TripController extends Controller
             ->add('difficulty', ChoiceType::class, array('choices' => array('Facile' => 'Facile', 'Moyen' => 'Moyen', 'Dur' => 'Dur'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('price', ChoiceType::class, array('choices' => array('Bas' => 'Bas', 'Moyennement bas' => 'Moyennement bas', 'Moyen' => 'Moyen', 'Moyennement eleve' => 'Moyennement élevé', 'Elevé' => 'Élevé'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('imageTrip', FileType::class, array('data_class' => null, 'label' => 'Image du voyage', 'attr' => array('class' => 'file', 'style' => 'margin-bottom:15px')))
+            ->add('traces', TextType::class, array('data_class' => null, 'label' => 'Map', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('save', SubmitType::class, array('label' => 'Créer le voyage', 'attr' => array('class' => 'btn btn-primary', 'style' => 'margin-bottom:15px')))
             ->getForm();
-        $map = new Map();
-        $marker1 = new Marker(new Coordinate(42.1799151,-0.3684824));
-        $marker2 = new Marker(new Coordinate(50,-0.3684824));
-        $marker3 = new Marker(new Coordinate(41.8333925,-88.0123449));
-        //$map->getOverlayManager()->addMarkers([$marker1, $marker2]);
-        $map->setAutoZoom(true);
-        $map->getOverlayManager()->addMarker($marker1);
-        $map->getOverlayManager()->addMarker($marker2);
-        $map->getOverlayManager()->addMarker($marker3);
-//        $map->setCenter(new Coordinate(49.1799151,-0.3684824));
-        $map->setMapOption('zoom', 13);
-//        var_dump($map);
 
-        //$event = new Event($marker->getVariable(),'click','function(){alert("Marker clicked"}', true);
+        $map = new Map();
+        $marker = new Marker(new Coordinate(49.1799151, -0.3684824));
+        /*$marker2 = new Marker(new Coordinate(50,-0.3684824));
+        $marker3 = new Marker(new Coordinate(41.8333925,-88.0123449));*/
+        //$map->getOverlayManager()->addMarkers([$marker1, $marker2]);
+        $map->getOverlayManager()->addMarker($marker);
+        $map->setCenter(new Coordinate(49.1799151, -0.3684824));
+        $map->setMapOption('zoom', 13);
+        $map->setStylesheetOption('width', '100%');
+        //$map->setAutoZoom(true);
+        /*
+        $map->getOverlayManager()->addMarker($marker);
+        $map->getOverlayManager()->addMarker($marker2);
+        $map->getOverlayManager()->addMarker($marker3);*/
+//        $map->setCenter(new Coordinate(49.1799151,-0.3684824));
+        //$map->setMapOption('zoom', 13);
+//        var_dump($map);
+        $event = new Event(
+            $map->getVariable(),
+            'click',
+            'function(event){
+                    getTrace(event);
+                   }',
+            true);
+        $newmarker = $this->getTraceAction($request);
+
+        /*$encoders = array(new JsonEncoder());
+        $normalizers = array(new GetSetMethodNormalizer());
+
+        $serializer = new Serializer($normalizers, $encoders);
+
+        $jsonContent = $serializer->serialize($map, 'json');
+        var_dump($jsonContent);*/
+
+        //var_dump($event->getHandle());
+        $map->getEventManager()->addEvent($event);
+
+        //$map->getEventManager()->addEvent($event);
+        //var_dump($map);
+
 
         $form->handleRequest($request);
 
@@ -134,6 +167,19 @@ class TripController extends Controller
             'form' => $form->createView(),
             'map' => $map));
     }
+
+    /**
+     * @Route("/trip/creer", name="trip_create_ajax" )
+     *
+     * @Method("POST")
+     */
+    public function getTraceAction(Request $request)
+    {
+        $json = $request->getContent(false);
+        var_dump(json_decode($json));
+        return new Response($json);
+    }
+
 
     /**
      * @Route("/trip/edit/{id}", name="trip_edit")
@@ -207,7 +253,7 @@ class TripController extends Controller
                     $this->getParameter('imagesTrip_directory'),
                     $fileName
                 );
-            }else {
+            } else {
                 $fileName = $oldfile;
             }
 
