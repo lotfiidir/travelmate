@@ -24,6 +24,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -50,6 +51,8 @@ class TripController extends Controller
 
     /**
      * @Route("/trip/creer", name="trip_create")
+     *
+     * @Method({"GET", "POST"})
      */
     public function createAction(Request $request)
     {
@@ -82,14 +85,15 @@ class TripController extends Controller
             ->getForm();
 
         $map = new Map();
-        $marker = new Marker(new Coordinate(49.1799151, -0.3684824));
         /*$marker2 = new Marker(new Coordinate(50,-0.3684824));
         $marker3 = new Marker(new Coordinate(41.8333925,-88.0123449));*/
         //$map->getOverlayManager()->addMarkers([$marker1, $marker2]);
+        $marker = new Marker(new Coordinate(49.1799151, -0.3684824));
         $map->getOverlayManager()->addMarker($marker);
         $map->setCenter(new Coordinate(49.1799151, -0.3684824));
         $map->setMapOption('zoom', 13);
         $map->setStylesheetOption('width', '100%');
+        dump($map);
         //$map->setAutoZoom(true);
         /*
         $map->getOverlayManager()->addMarker($marker);
@@ -102,10 +106,10 @@ class TripController extends Controller
             $map->getVariable(),
             'click',
             'function(event){
-                    getTrace(event);
+                    getTrace(event, '.$map->getVariable().');
                    }',
             true);
-        $newmarker = $this->getTraceAction($request);
+
 
         /*$encoders = array(new JsonEncoder());
         $normalizers = array(new GetSetMethodNormalizer());
@@ -117,6 +121,12 @@ class TripController extends Controller
 
         //var_dump($event->getHandle());
         $map->getEventManager()->addEvent($event);
+
+        if ($request->getMethod() == 'POST') {
+            $json = new Response($request);
+            $marker2 = new Marker(new Coordinate(50.1799151, -0.3684824));
+            $map->getOverlayManager()->addMarker($marker2);
+        }
 
         //$map->getEventManager()->addEvent($event);
         //var_dump($map);
@@ -168,17 +178,23 @@ class TripController extends Controller
             'map' => $map));
     }
 
-    /**
-     * @Route("/trip/creer", name="trip_create_ajax" )
+/*    /**
      *
-     * @Method("POST")
-     */
+     *
+
     public function getTraceAction(Request $request)
     {
+        $map = new Map();
+        $marker = new Marker(new Coordinate(50, -0.3684824));
+        $map->getOverlayManager()->addMarker($marker);
+        $map->setCenter(new Coordinate(50, -0.3684824));
+        $map->setMapOption('zoom', 13);
+        $map->setStylesheetOption('width', '100%');
+        var_dump($map);
         $json = $request->getContent(false);
-        var_dump(json_decode($json));
-        return new Response($json);
-    }
+
+        return new JsonResponse($json);
+    }*/
 
 
     /**
