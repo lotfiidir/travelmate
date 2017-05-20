@@ -6,7 +6,13 @@
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ form_end(form) }}
-    {{ ivory_google_map(map) }}
-    {{ ivory_google_api([map]) }}
+    <div id="markers"></div>
+    <div id="map_canvas"></div>
 
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('js/maps.js') }}"></script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnX_MphD697QVoFq4mKvnpxhpyHQm2vOg&callback=initMap">
+    </script>
 {% endblock %}

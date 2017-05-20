@@ -80,20 +80,22 @@ class TripController extends Controller
             ->add('difficulty', ChoiceType::class, array('choices' => array('Facile' => 'Facile', 'Moyen' => 'Moyen', 'Dur' => 'Dur'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('price', ChoiceType::class, array('choices' => array('Bas' => 'Bas', 'Moyennement bas' => 'Moyennement bas', 'Moyen' => 'Moyen', 'Moyennement eleve' => 'Moyennement élevé', 'Elevé' => 'Élevé'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('imageTrip', FileType::class, array('data_class' => null, 'label' => 'Image du voyage', 'attr' => array('class' => 'file', 'style' => 'margin-bottom:15px')))
-            ->add('traces', TextType::class, array('data_class' => null, 'label' => 'Map', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('save', SubmitType::class, array('label' => 'Créer le voyage', 'attr' => array('class' => 'btn btn-primary', 'style' => 'margin-bottom:15px')))
             ->getForm();
-
-        $map = new Map();
+//////////->
+        //$map = new Map();
+///////////<-
         /*$marker2 = new Marker(new Coordinate(50,-0.3684824));
         $marker3 = new Marker(new Coordinate(41.8333925,-88.0123449));*/
         //$map->getOverlayManager()->addMarkers([$marker1, $marker2]);
-        $marker = new Marker(new Coordinate(49.1799151, -0.3684824));
+/////////////->
+        /*$marker = new Marker(new Coordinate(49.1799151, -0.3684824));
         $map->getOverlayManager()->addMarker($marker);
         $map->setCenter(new Coordinate(49.1799151, -0.3684824));
         $map->setMapOption('zoom', 13);
         $map->setStylesheetOption('width', '100%');
-        dump($map);
+        dump($map);*/
+/////////////////<-
         //$map->setAutoZoom(true);
         /*
         $map->getOverlayManager()->addMarker($marker);
@@ -102,14 +104,15 @@ class TripController extends Controller
 //        $map->setCenter(new Coordinate(49.1799151,-0.3684824));
         //$map->setMapOption('zoom', 13);
 //        var_dump($map);
-        $event = new Event(
+//////////////->
+        /*$event = new Event(
             $map->getVariable(),
             'click',
             'function(event){
                     getTrace(event, '.$map->getVariable().');
-                   }',
-            true);
-
+                   }',true);
+        $map->getEventManager()->addDomEvent($event);*/
+////////////////<-
 
         /*$encoders = array(new JsonEncoder());
         $normalizers = array(new GetSetMethodNormalizer());
@@ -120,12 +123,10 @@ class TripController extends Controller
         var_dump($jsonContent);*/
 
         //var_dump($event->getHandle());
-        $map->getEventManager()->addEvent($event);
 
         if ($request->getMethod() == 'POST') {
             $json = new Response($request);
-            $marker2 = new Marker(new Coordinate(50.1799151, -0.3684824));
-            $map->getOverlayManager()->addMarker($marker2);
+            $trip->setTraces($request->getContent(false));
         }
 
         //$map->getEventManager()->addEvent($event);
@@ -174,8 +175,8 @@ class TripController extends Controller
         }
 
         return $this->render('trip/create.html.twig', array(
-            'form' => $form->createView(),
-            'map' => $map));
+            'form' => $form->createView()/*,
+            'map' => $map*/));
     }
 
 /*    /**
