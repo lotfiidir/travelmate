@@ -9,9 +9,11 @@ use Ivory\GoogleMap\Map;
 use Ivory\GoogleMap\Overlay\Animation;
 use Ivory\GoogleMap\Overlay\Circle;
 use Ivory\GoogleMap\Overlay\Icon;
+use Ivory\GoogleMap\Overlay\IconSequence;
 use Ivory\GoogleMap\Overlay\Marker;
 use Ivory\GoogleMap\Overlay\MarkerShape;
 use Ivory\GoogleMap\Overlay\MarkerShapeType;
+use Ivory\GoogleMap\Overlay\Polyline;
 use Ivory\GoogleMap\Overlay\Symbol;
 use Ivory\GoogleMap\Overlay\SymbolPath;
 use Ivory\GoogleMapBundle\Form\Type;
@@ -21,6 +23,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -57,10 +60,11 @@ class TripController extends Controller
     public function createAction(Request $request)
     {
         $trip = new Trip();
+
         $form = $this->createFormBuilder($trip)
             ->add('title', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter un titre...')))
             ->add('description', TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter une description...')))
-            ->add('date_departure', DateTimeType::class, array('attr' => array('class' => 'formcontrol', 'style' => 'margin-bottom:15px')))
+            ->add('date_departure', DateTimeType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('destination', CountryType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('type', ChoiceType::class, array('choices' => array("Auto-stop" => "Auto-stop",
                 "Aventure" => "Aventure",
@@ -80,6 +84,7 @@ class TripController extends Controller
             ->add('difficulty', ChoiceType::class, array('choices' => array('Facile' => 'Facile', 'Moyen' => 'Moyen', 'Dur' => 'Dur'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('price', ChoiceType::class, array('choices' => array('Bas' => 'Bas', 'Moyennement bas' => 'Moyennement bas', 'Moyen' => 'Moyen', 'Moyennement eleve' => 'Moyennement élevé', 'Elevé' => 'Élevé'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('imageTrip', FileType::class, array('data_class' => null, 'label' => 'Image du voyage', 'attr' => array('class' => 'file', 'style' => 'margin-bottom:15px')))
+            ->add('traces', HiddenType::class, array('label' => 'map', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px'), 'required' => false))
             ->add('save', SubmitType::class, array('label' => 'Créer le voyage', 'attr' => array('class' => 'btn btn-primary', 'style' => 'margin-bottom:15px')))
             ->getForm();
 //////////->
@@ -127,7 +132,12 @@ class TripController extends Controller
         if ($request->getMethod() == 'POST') {
             $json = new Response($request);
             $trip->setTraces($request->getContent(false));
+            $jsonArray[] = $request->getContent(false);
+            foreach ($jsonArray as $item) {
+                $trip->setTraces($item);
+            }
         }
+        var_dump($trip->getTraces());
 
         //$map->getEventManager()->addEvent($event);
         //var_dump($map);
@@ -150,6 +160,7 @@ class TripController extends Controller
                 $this->getParameter('imagesTrip_directory'),
                 $fileName
             );
+            $traces = $form['traces']->getData();
 
             $now = new \DateTime('now');
 
@@ -161,6 +172,7 @@ class TripController extends Controller
             $trip->setDifficulty($difficulty);
             $trip->setPrice($price);
             $trip->setImageTrip($fileName);
+            $trip->setTraces($traces);
             $trip->setCreateDate($now);
 
             $em = $this->getDoctrine()->getManager();
@@ -179,23 +191,23 @@ class TripController extends Controller
             'map' => $map*/));
     }
 
-/*    /**
-     *
-     *
+    /*    /**
+         *
+         *
 
-    public function getTraceAction(Request $request)
-    {
-        $map = new Map();
-        $marker = new Marker(new Coordinate(50, -0.3684824));
-        $map->getOverlayManager()->addMarker($marker);
-        $map->setCenter(new Coordinate(50, -0.3684824));
-        $map->setMapOption('zoom', 13);
-        $map->setStylesheetOption('width', '100%');
-        var_dump($map);
-        $json = $request->getContent(false);
+        public function getTraceAction(Request $request)
+        {
+            $map = new Map();
+            $marker = new Marker(new Coordinate(50, -0.3684824));
+            $map->getOverlayManager()->addMarker($marker);
+            $map->setCenter(new Coordinate(50, -0.3684824));
+            $map->setMapOption('zoom', 13);
+            $map->setStylesheetOption('width', '100%');
+            var_dump($map);
+            $json = $request->getContent(false);
 
-        return new JsonResponse($json);
-    }*/
+            return new JsonResponse($json);
+        }*/
 
 
     /**
@@ -310,9 +322,28 @@ class TripController extends Controller
         $trip = $this->getDoctrine()
             ->getRepository('AppBundle:Trip')
             ->find($id);
+        $map = new Map();
+        $map->setAutoZoom(true);
+        $poly = [];
+        $polyline = new Polyline();
+        foreach (json_decode($trip->getTraces()) as $item) {
+            $marker = new Marker(new Coordinate($item));
+            $map->getOverlayManager()->addMarker($marker);
+            list($lat,$lng) = explode(",", $item);
+            $poly[] = new Coordinate($lat, $lng);
+            dump($polyline);
+        }
+        $polyline->setCoordinates(
+            $poly
+        );
+        $polyline->setIconSequences([]);
+        $polyline->setOption('fillOpacity', 0.5);
+        $map->setStylesheetOption('width', '100%');
+        $map->getOverlayManager()->addPolyline($polyline);
 
         return $this->render('trip/details.html.twig', array(
-            'trip' => $trip
+            'trip' => $trip,
+            'map' => $map
         ));
     }
 

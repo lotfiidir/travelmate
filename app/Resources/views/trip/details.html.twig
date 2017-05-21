@@ -26,6 +26,10 @@
                 {{ trip.description }}
             </p>
         </div>
+        <div class="col-md-12">
+            {{ ivory_google_map(map) }}
+            {{ ivory_google_api([map]) }}
+        </div>
     </div>
     <div class="row">
         <a href="../../trip/edit/{{ trip.id }}" class="btn btn-success">Modifier</a>

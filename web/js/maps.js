@@ -1,18 +1,4 @@
-/*var markers = [];
- function getTrace(e, objMap) {
- var lat = e.latLng.lat();
- var lng = e.latLng.lng();
- //console.log(objMap);
-
- console.log("Latitude:" + lat);
- console.log("Longitude:" + lng);
- var xhr = new XMLHttpRequest();
- xhr.open("POST", "/trip/creer");
- xhr.setRequestHeader("Content-Type", "application/json");
- xhr.send(JSON.stringify({trace: {lat: lat, lng: lng}}));
-
-
- var marker = new google.maps.Marker({
+/*var marker = new google.maps.Marker({
  position: e.latLng,
  map: objMap,
  draggable: true
@@ -38,6 +24,7 @@
  var thisMarker = getMarkers(markers);
 
  });*/
+
 window.onload = function () {
 
 
@@ -77,13 +64,12 @@ window.onload = function () {
             strokeWeight: 3
         });
         polyArray.push(poly);
-        for (i=0; i < polyArray.length; i++)
-        {
+        for (i = 0; i < polyArray.length; i++) {
             polyArray[i].setMap(map); //or line[i].setVisible(false);
-            console.log("foooorrr"+polyArray[i]);
+            console.log("foooorrr" + polyArray[i]);
         }
 
-        console.log(polyArray);
+        //console.log(polyArray);
     }
 
     function addMarker(location) {
@@ -95,8 +81,10 @@ window.onload = function () {
             draggable: false
         });
         markers.push(marker);
+        var isD = false;
         if (markers.length > 1) {
             calculate(markers, directionsService, directionsDisplay);
+            var isD = true;
         }
         marker.id = uniqueId;
         uniqueId++;
@@ -111,7 +99,13 @@ window.onload = function () {
         google.maps.event.addListener(marker, 'click', function (event) {
             infowin(map, marker, event);
         });
-
+        var direction = [];
+        if (isD) {
+            direction.push(directionsService);
+            direction.push(directionsDisplay);
+        }
+        //exportMap(marker, direction, polyArray);
+        exportMap(markers);
     }
 
     function infowin(map, marker, event) {
@@ -158,15 +152,16 @@ window.onload = function () {
                 return;
             }
         }
-        //poly.setMap(null);
-        console.log(poly);
+        poly.setMap(null);
+        polyArray.pop();
+        //console.log(poly);
     }
+
     function setMapOnAll(map) {
         for (var i = 0; i < markers.length; i++) {
             markers[i].setMap(map);
         }
-        for (i=0; i<polyArray.length; i++)
-        {
+        for (i = 0; i < polyArray.length; i++) {
             polyArray[i].setMap(map); //or line[i].setVisible(false);
             //polyArray[i].getPath().removeAt(i);
         }
@@ -174,7 +169,8 @@ window.onload = function () {
         //poly.setMap(null);
         markers = [];
         polyArray = [];
-        console.log('tableau de polyline :'+polyArray)
+        exportMap(markers);
+        //console.log('tableau de polyline :' + polyArray)
     }
 
     function calculate(markers, directionsService, directionsDisplay) {
@@ -204,15 +200,39 @@ window.onload = function () {
                 directionsDisplay.setMap(map);
                 directionsDisplay.setDirections(response);
                 var route = response.routes[0];
-                console.log(route);
+                //console.log(route);
             } else {
                 addPoly(markers);
                 //alert('Directions request failed due to ' + status);
             }
         });
     }
+
     document.getElementById("nettoyer").addEventListener("click", function (e) {
         setMapOnAll(null);
         directionsDisplay.setMap(null);
     }, false);
+
+    function exportMap(marker) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/trip/creer");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        var coor = [];
+        var newMarker = [];
+        //console.log(marker);
+
+        for(i=0;i<marker.length;i++){
+            var lat = marker[i].getPosition().lat();
+            var lng = marker[i].getPosition().lng();
+            coor.push(lat+','+lng);
+        }
+        console.log(coor);
+        xhr.send(JSON.stringify(coor));
+        var value = document.getElementById("form_traces").setAttribute('value', JSON.stringify(coor));
+        //console.log({marker: +JSON.stringify(marker)},{direction:+JSON.stringify(marker)},{poly:+JSON.stringify(poly)});
+
+    }
+
 };
+
+
