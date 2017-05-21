@@ -6,13 +6,21 @@
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ form_end(form) }}
-    <div id="markers"></div>
-    <div id="map_canvas"></div>
+    <div id="map">
+        <div id="markers"></div>
+        <div id="map_canvas">
+        </div>
+        <div id="floating-sup">
+            <div id="nettoyer" class="btn btn-danger" >Nettoyer la carte</div>
+        </div>
+    </div>
+
+
 
 {% endblock %}
 {% block javascripts %}
     <script src="{{ asset('js/maps.js') }}"></script>
     <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnX_MphD697QVoFq4mKvnpxhpyHQm2vOg&callback=initMap">
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnX_MphD697QVoFq4mKvnpxhpyHQm2vOg">
     </script>
 {% endblock %}

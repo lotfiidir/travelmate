@@ -18,7 +18,11 @@
     cursor: pointer;
 }
 
-#floating-panel {
+#map{
+    position: relative;
+}
+
+#floating-sup {
     position: absolute;
     top: 10px;
     left: 25%;
