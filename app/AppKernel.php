@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new Ivory\GoogleMapBundle\IvoryGoogleMapBundle(),
             new Ivory\SerializerBundle\IvorySerializerBundle(),
             new Http\HttplugBundle\HttplugBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
             new AppBundle\AppBundle()
         ];
 

@@ -231,6 +231,7 @@ class TripController extends Controller
         $trip->setImageTrip($trip->getImageTrip());
         $trip->setCreateDate($now);
         $oldfile = $trip->getImageTrip();
+        $trip->setTraces($trip->getTraces());
 
         $form = $this->createFormBuilder($trip)
             ->add('title', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
@@ -255,6 +256,7 @@ class TripController extends Controller
             ->add('difficulty', ChoiceType::class, array('choices' => array('Facile' => 'Facile', 'Moyen' => 'Moyen', 'Dur' => 'Dur'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('price', ChoiceType::class, array('choices' => array('Bas' => 'Bas', 'Moyennement bas' => 'Moyennement bas', 'Moyen' => 'Moyen', 'Moyennement eleve' => 'Moyennement élevé', 'Elevé' => 'Élevé'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('imageTrip', FileType::class, array('data_class' => null, 'label' => 'Image du voyage', 'attr' => array('class' => 'btn btn-file', 'style' => 'margin-bottom:15px')))
+            ->add('traces', HiddenType::class, array('label' => 'map', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px'), 'required' => false))
             ->add('save', SubmitType::class, array('label' => 'Modifier le voyage', 'attr' => array('class' => 'btn btn-primary', 'style' => 'margin-bottom:15px')))
             ->getForm();
 
@@ -271,6 +273,7 @@ class TripController extends Controller
             $difficulty = $form['difficulty']->getData();
             $price = $form['price']->getData();
             $file = $trip->getImageTrip();
+            $traces = $form['traces']->getData();
 
             if ($oldfile !== $file) {
                 $oldFile = $this->getParameter('imagesTrip_directory') . "/$oldfile";
@@ -298,6 +301,7 @@ class TripController extends Controller
             $trip->setPrice($price);
             $trip->setImageTrip($fileName);
             $trip->setCreateDate($now);
+            $trip->setTraces($traces);
 
             $em->flush();
 
