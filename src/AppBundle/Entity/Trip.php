@@ -98,8 +98,12 @@ class Trip
     private $createDate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
+     * @var User $user
+     *
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="trips", cascade={"persist", "merge"})
+     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * })
      */
     private $user;
 
@@ -346,7 +350,7 @@ class Trip
     /**
      * @param mixed $user
      */
-    public function setUser($user)
+    public function setUser(User $user)
     {
         $this->user = $user;
     }

@@ -61,7 +61,9 @@ class TripController extends Controller
     public function createAction(Request $request)
     {
         $trip = new Trip();
-
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $trip->setUser($user->getId());
+        dump($trip->getUser());
         $form = $this->createFormBuilder($trip)
             ->add('title', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter un titre...')))
             ->add('description', TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter une description...')))
@@ -305,6 +307,8 @@ class TripController extends Controller
             $trip->setImageTrip($fileName);
             $trip->setCreateDate($now);
             $trip->setTraces($traces);
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+            $trip->setUser($user->getId());
 
             $em->flush();
 
@@ -330,9 +334,17 @@ class TripController extends Controller
         $trip = $this->getDoctrine()
             ->getRepository('AppBundle:Trip')
             ->find($id);
+        dump($trip->getUser());
 
-            $map = new Map();
-            $map->setAutoZoom(true);
+        $userId = $trip->getUser();
+        dump($userId);
+        $user = $this->getDoctrine()
+        ->getRepository('AppBundle:User')
+        ->find($userId);
+        dump($user);
+
+        $map = new Map();
+        $map->setAutoZoom(true);
         if ($trip->getTraces() != '') {
             $poly = [];
             $polyline = new Polyline();
@@ -354,7 +366,8 @@ class TripController extends Controller
         }
         return $this->render('trip/details.html.twig', array(
             'trip' => $trip,
-            'map' => $map
+            'map' => $map,
+            'user' => $user
         ));
     }
 

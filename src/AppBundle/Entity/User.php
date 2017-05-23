@@ -3,6 +3,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -50,9 +51,22 @@ class User extends BaseUser
      */
     private $imageName;
 
+    /**
+     * @var ArrayCollection $trips
+     *
+     * @ORM\OneToMany(targetEntity="Trip", mappedBy="region", cascade={"persist", "remove", "merge"})
+     *
+     */
+    private $trips;
+
+
     public function __construct()
     {
         parent::__construct();
+
+        //add role
+        $this->addRole("ROLE_USER");
+        $this->trips = new ArrayCollection();
     }
 
     /**
@@ -137,5 +151,26 @@ class User extends BaseUser
     {
         return $this->imageName;
     }
+
+    /**
+     * @param Trip $trip
+     */
+    public function addTrip(Trip $trip)
+    {
+        $trip->setUser($this);
+
+        // Si l'objet fait déja partie de la collection on ne l'ajoute pas
+        if (!$this->trips->contains($trip)){
+            $this->trips->add($trip);
+        }
+    }
+    /**
+     * @return ArrayCollection $trips
+     */
+    public function getTrips()
+    {
+        return $this->trips;
+    }
+
 
 }

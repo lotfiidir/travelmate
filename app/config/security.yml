@@ -36,3 +36,4 @@ security:
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/, role: ROLE_ADMIN }
         - { path: ^/trip/details/, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/trip/edit/, role: [ROLE_USER, ROLE_ADMIN] }
