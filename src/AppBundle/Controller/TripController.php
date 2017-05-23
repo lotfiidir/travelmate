@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Trip;
+use AppBundle\Entity\User;
 use Ivory\GoogleMap\Base\Coordinate;
 use Ivory\GoogleMap\Event\Event;
 use Ivory\GoogleMap\Map;
@@ -137,7 +138,7 @@ class TripController extends Controller
                 $trip->setTraces($item);
             }
         }
-        var_dump($trip->getTraces());
+        //var_dump($trip->getTraces());
 
         //$map->getEventManager()->addEvent($event);
         //var_dump($map);
@@ -174,6 +175,8 @@ class TripController extends Controller
             $trip->setImageTrip($fileName);
             $trip->setTraces($traces);
             $trip->setCreateDate($now);
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+            $trip->setUser($user->getId());
 
             $em = $this->getDoctrine()->getManager();
 
@@ -323,28 +326,32 @@ class TripController extends Controller
      */
     public function detailsAction($id)
     {
+
         $trip = $this->getDoctrine()
             ->getRepository('AppBundle:Trip')
             ->find($id);
-        $map = new Map();
-        $map->setAutoZoom(true);
-        $poly = [];
-        $polyline = new Polyline();
-        foreach (json_decode($trip->getTraces()) as $item) {
-            $marker = new Marker(new Coordinate($item));
-            $map->getOverlayManager()->addMarker($marker);
-            list($lat,$lng) = explode(",", $item);
-            $poly[] = new Coordinate($lat, $lng);
-            dump($polyline);
-        }
-        $polyline->setCoordinates(
-            $poly
-        );
-        $polyline->setIconSequences([]);
-        $polyline->setOption('fillOpacity', 0.5);
-        $map->setStylesheetOption('width', '100%');
-        $map->getOverlayManager()->addPolyline($polyline);
 
+            $map = new Map();
+            $map->setAutoZoom(true);
+        if ($trip->getTraces() != '') {
+            $poly = [];
+            $polyline = new Polyline();
+
+            foreach (json_decode($trip->getTraces()) as $item) {
+                $marker = new Marker(new Coordinate($item));
+                $map->getOverlayManager()->addMarker($marker);
+                list($lat, $lng) = explode(",", $item);
+                $poly[] = new Coordinate($lat, $lng);
+                dump($polyline);
+            }
+            $polyline->setCoordinates(
+                $poly
+            );
+            $polyline->setIconSequences([]);
+            $polyline->setOption('fillOpacity', 0.5);
+            $map->setStylesheetOption('width', '100%');
+            $map->getOverlayManager()->addPolyline($polyline);
+        }
         return $this->render('trip/details.html.twig', array(
             'trip' => $trip,
             'map' => $map

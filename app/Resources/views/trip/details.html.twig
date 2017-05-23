@@ -2,6 +2,7 @@
 {% block title %}Travel Mate | {{ trip.title }}{% endblock %}
 
 {% block body %}
+{{  include ('../user/show.html.twig') }}
     <a class="btn btn-default" href="/trips">Retour à la liste</a>
     <hr>
     <h2 class="page-header">{{ trip.title }}</h2>

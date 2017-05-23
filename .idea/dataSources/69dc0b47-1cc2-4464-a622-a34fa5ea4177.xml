@@ -3116,10 +3116,23 @@
       <DataType>longtext|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="694" parent="70" name="PRIMARY">
+    <column id="694" parent="70" name="user_id">
+      <Position>12</Position>
+      <DataType>int(11)|0</DataType>
+    </column>
+    <index id="695" parent="70" name="IDX_7656F53BA76ED395">
+      <ColNames>user_id</ColNames>
+    </index>
+    <key id="696" parent="70" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
+    <foreign-key id="697" parent="70" name="FK_7656F53BA76ED395">
+      <ColNames>user_id</ColNames>
+      <RefSchemaName>travelmate_db</RefSchemaName>
+      <RefTableName>fos_user</RefTableName>
+      <RefColNames>id</RefColNames>
+    </foreign-key>
   </database-model>
 </dataSource>

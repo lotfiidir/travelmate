@@ -101,9 +101,13 @@ fos_user:
             from_email:
                 address: lotfi.idir@gmail.com
                 sender_name: Travel mate
+    profile:
+        form:
+            type: AppBundle\Form\RegistrationType
+
 vich_uploader:
     db_driver: orm
     mappings:
             user_image:
-                uri_prefix:         /images/user
+                uri_prefix:         /uploads/user/profilepics
                 upload_destination: '%kernel.root_dir%/../web/uploads/user/profilepics'
