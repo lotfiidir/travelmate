@@ -51,14 +51,6 @@ class User extends BaseUser
      */
     private $imageName;
 
-    /**
-     * @var ArrayCollection $trips
-     *
-     * @ORM\OneToMany(targetEntity="Trip", mappedBy="region", cascade={"persist", "remove", "merge"})
-     *
-     */
-    private $trips;
-
 
     public function __construct()
     {
@@ -100,6 +92,15 @@ class User extends BaseUser
     {
         $this->name = $name;
     }
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
     /**
      * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
      * of 'UploadedFile' is injected into this setter to trigger the  update. If this
@@ -125,11 +126,11 @@ class User extends BaseUser
     }
 
     /**
-     * @return File|null
+     * @return string|null
      */
-    public function getImageFile()
+    public function getImageName()
     {
-        return $this->imageFile;
+        return $this->imageName;
     }
 
     /**
@@ -143,34 +144,4 @@ class User extends BaseUser
 
         return $this;
     }
-
-    /**
-     * @return string|null
-     */
-    public function getImageName()
-    {
-        return $this->imageName;
-    }
-
-    /**
-     * @param Trip $trip
-     */
-    public function addTrip(Trip $trip)
-    {
-        $trip->setUser($this);
-
-        // Si l'objet fait déja partie de la collection on ne l'ajoute pas
-        if (!$this->trips->contains($trip)){
-            $this->trips->add($trip);
-        }
-    }
-    /**
-     * @return ArrayCollection $trips
-     */
-    public function getTrips()
-    {
-        return $this->trips;
-    }
-
-
 }

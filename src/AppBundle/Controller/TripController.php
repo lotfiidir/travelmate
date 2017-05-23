@@ -61,9 +61,9 @@ class TripController extends Controller
     public function createAction(Request $request)
     {
         $trip = new Trip();
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        /*$user = $this->get('security.token_storage')->getToken()->getUser();
         $trip->setUser($user->getId());
-        dump($trip->getUser());
+        dump($trip->getUser());*/
         $form = $this->createFormBuilder($trip)
             ->add('title', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter un titre...')))
             ->add('description', TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter une description...')))
@@ -177,11 +177,12 @@ class TripController extends Controller
             $trip->setImageTrip($fileName);
             $trip->setTraces($traces);
             $trip->setCreateDate($now);
-            $user = $this->get('security.token_storage')->getToken()->getUser();
-            $trip->setUser($user->getId());
+            $userId = $this->get('security.token_storage')->getToken()->getUser();
+            $user = $this->getUser();
+            $trip->setUser($user);
+            var_dump($trip);
 
             $em = $this->getDoctrine()->getManager();
-
             $em->persist($trip);
             $em->flush();
 
@@ -307,8 +308,8 @@ class TripController extends Controller
             $trip->setImageTrip($fileName);
             $trip->setCreateDate($now);
             $trip->setTraces($traces);
-            $user = $this->get('security.token_storage')->getToken()->getUser();
-            $trip->setUser($user->getId());
+            /*$user = $this->get('security.token_storage')->getToken()->getUser();
+            $trip->setUser($user->getId());*/
 
             $em->flush();
 

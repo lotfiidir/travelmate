@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use AppBundle\Entity\User;
 
 /**
  * Trip
@@ -98,12 +99,9 @@ class Trip
     private $createDate;
 
     /**
-     * @var User $user
      *
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="trips", cascade={"persist", "merge"})
-     * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     * })
+     * @ORM\ManyToOne(targetEntity="User")
+     *
      */
     private $user;
 
@@ -340,7 +338,7 @@ class Trip
     }
 
     /**
-     * @return mixed
+     * @return User
      */
     public function getUser()
     {
@@ -348,7 +346,7 @@ class Trip
     }
 
     /**
-     * @param mixed $user
+     * @param User $user
      */
     public function setUser(User $user)
     {
