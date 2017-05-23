@@ -39,7 +39,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class TripController extends Controller
 {
     /**
-     * @Route("/trips", name="trips_list")
+     * @Route("/", name="trips_list")
      */
     public function listAction(Request $request)
     {

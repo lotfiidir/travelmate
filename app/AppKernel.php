@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new Ivory\SerializerBundle\IvorySerializerBundle(),
             new Http\HttplugBundle\HttplugBundle(),
             new FOS\UserBundle\FOSUserBundle(),
+            new Vich\UploaderBundle\VichUploaderBundle(),
             new AppBundle\AppBundle()
         ];
 
