@@ -175,12 +175,14 @@ class TripController extends Controller
             $trip->setDifficulty($difficulty);
             $trip->setPrice($price);
             $trip->setImageTrip($fileName);
+            $trip->setImagePath($file->getClientOriginalName());
             $trip->setTraces($traces);
             $trip->setCreateDate($now);
             $userId = $this->get('security.token_storage')->getToken()->getUser();
             $user = $this->getUser();
             $trip->setUser($user);
-            var_dump($trip);
+
+
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($trip);
@@ -235,6 +237,7 @@ class TripController extends Controller
         $trip->setDifficulty($trip->getDifficulty());
         $trip->setPrice($trip->getPrice());
         $trip->setImageTrip($trip->getImageTrip());
+        $trip->setImagePath($trip->getImagePath());
         $trip->setCreateDate($now);
         $oldfile = $trip->getImageTrip();
         $trip->setTraces($trip->getTraces());
@@ -311,6 +314,8 @@ class TripController extends Controller
             /*$user = $this->get('security.token_storage')->getToken()->getUser();
             $trip->setUser($user->getId());*/
 
+            $user = $this->getUser();
+            $trip->setUser($user);
             $em->flush();
 
             $this->addFlash(
@@ -335,14 +340,11 @@ class TripController extends Controller
         $trip = $this->getDoctrine()
             ->getRepository('AppBundle:Trip')
             ->find($id);
-        dump($trip->getUser());
 
         $userId = $trip->getUser();
-        dump($userId);
         $user = $this->getDoctrine()
         ->getRepository('AppBundle:User')
         ->find($userId);
-        dump($user);
 
         $map = new Map();
         $map->setAutoZoom(true);
@@ -355,7 +357,6 @@ class TripController extends Controller
                 $map->getOverlayManager()->addMarker($marker);
                 list($lat, $lng) = explode(",", $item);
                 $poly[] = new Coordinate($lat, $lng);
-                dump($polyline);
             }
             $polyline->setCoordinates(
                 $poly

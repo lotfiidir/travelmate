@@ -11,20 +11,17 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class UserController extends Controller
 {
     /**
-     * @Route("/user", name="user_all")
+     * @Route("/user/details/{id}", name="user_details")
      */
-    public function showAction(Request $request)
+    public function detailsAction($id)
     {
-        $user = new User();
-        $usr = $this->getDoctrine()
+
+        $user = $this->getDoctrine()
             ->getRepository('AppBundle:User')
-            ->findAll();
-        var_dump($usr);
-        //dump($request->get('id'));
-        //$test = $request->get('id');
+            ->find($id);
 
         return $this->render('user/show.html.twig', array(
-            'trip' => $usr
+            'user' => $user
         ));
     }
 }

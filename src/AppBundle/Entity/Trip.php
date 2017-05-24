@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use AppBundle\Entity\User;
 
@@ -73,7 +74,7 @@ class Trip
     private $price;
 
     /**
-     * @var string
+     * @var UploadedFile
      *
      * @ORM\Column(type="string")
      *
@@ -83,6 +84,10 @@ class Trip
      *
      */
     private $imageTrip;
+    /**
+     * @ORM\Column(type="string")
+     **/
+    private $imagePath;
 
     /**
      * @var string
@@ -284,11 +289,17 @@ class Trip
         return $this;
     }
 
+    /**
+     * @return UploadedFile
+     */
     public function getImageTrip()
     {
         return $this->imageTrip;
     }
 
+    /**
+     * @param UploadedFile $file - Uploaded File
+     */
     public function setImageTrip($imageTrip)
     {
         $this->imageTrip = $imageTrip;
@@ -351,6 +362,22 @@ class Trip
     public function setUser(User $user)
     {
         $this->user = $user;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImagePath()
+    {
+        return $this->imagePath;
+    }
+
+    /**
+     * @param mixed $imagePath
+     */
+    public function setImagePath($imagePath)
+    {
+        $this->imagePath = $imagePath;
     }
 
 }

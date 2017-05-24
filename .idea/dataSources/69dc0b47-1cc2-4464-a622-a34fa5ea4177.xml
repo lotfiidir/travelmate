@@ -3120,15 +3120,20 @@
       <Position>12</Position>
       <DataType>int(11)|0</DataType>
     </column>
-    <index id="695" parent="70" name="IDX_7656F53BA76ED395">
+    <column id="695" parent="70" name="image_path">
+      <Position>13</Position>
+      <DataType>varchar(255)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="696" parent="70" name="IDX_7656F53BA76ED395">
       <ColNames>user_id</ColNames>
     </index>
-    <key id="696" parent="70" name="PRIMARY">
+    <key id="697" parent="70" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="697" parent="70" name="FK_7656F53BA76ED395">
+    <foreign-key id="698" parent="70" name="FK_7656F53BA76ED395">
       <ColNames>user_id</ColNames>
       <RefSchemaName>travelmate_db</RefSchemaName>
       <RefTableName>fos_user</RefTableName>

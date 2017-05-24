@@ -1,1 +1,7 @@
-<h1>{{ trip.title }} - généré par le USER CONTROLLER</h1>
+{% extends 'base.html.twig' %}
+{% block title %}Travel Mate | {{ user.username }}{% endblock %}
+{% block body %}
+    <h1>{{ user.name }}</h1>
+    <p>{{ user.description }}</p>
+    <img src="../../uploads/user/profilepics/{{ user.imageName }}" alt="image de {{ user.username }}">
+{% endblock %}

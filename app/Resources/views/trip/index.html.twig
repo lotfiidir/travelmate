@@ -7,7 +7,7 @@
         </div>
     </section>
     {% for trip in trips %}
-        <div class="col-md-4">
+        <div class="col-md-4 col-trip">
             <h4>{{ trip.title }}</h4>
             {% if (trip.imageTrip) %}
                 <img class="col-md-4" src="uploads/imageTrips/{{ trip.imageTrip }}" alt="">
