@@ -22,7 +22,7 @@ class Trip
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
@@ -34,7 +34,7 @@ class Trip
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=255)
+     * @ORM\Column(name="description", type="text")
      */
     private $description;
 
@@ -44,6 +44,13 @@ class Trip
      * @ORM\Column(name="date_departure", type="datetimetz")
      */
     private $dateDeparture;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_return", type="datetimetz")
+     */
+    private $dateReturn;
 
     /**
      * @var string
@@ -190,6 +197,22 @@ class Trip
         $this->dateDeparture = $dateDeparture;
 
         return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateReturn()
+    {
+        return $this->dateReturn;
+    }
+
+    /**
+     * @param \DateTime $dateReturn
+     */
+    public function setDateReturn($dateReturn)
+    {
+        $this->dateReturn = $dateReturn;
     }
 
     /**
