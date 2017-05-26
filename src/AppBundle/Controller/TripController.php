@@ -68,6 +68,7 @@ class TripController extends Controller
             ->add('title', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter un titre...')))
             ->add('description', TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter une description...')))
             ->add('date_departure', DateTimeType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('date_return', DateTimeType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('destination', CountryType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('type', ChoiceType::class, array('choices' => array("Auto-stop" => "Auto-stop",
                 "Aventure" => "Aventure",
@@ -153,6 +154,7 @@ class TripController extends Controller
             $title = $form['title']->getData();
             $description = $form['description']->getData();
             $dateDeparture = $form['date_departure']->getData();
+            $dateReturn = $form['date_return']->getData();
             $destination = $form['destination']->getData();
             $type = $form['type']->getData();
             $difficulty = $form['difficulty']->getData();
@@ -170,6 +172,7 @@ class TripController extends Controller
             $trip->setTitle($title);
             $trip->setDescription($description);
             $trip->setDateDeparture($dateDeparture);
+            $trip->setDateReturn($dateReturn);
             $trip->setDestination($destination);
             $trip->setType($type);
             $trip->setDifficulty($difficulty);
@@ -232,6 +235,7 @@ class TripController extends Controller
         $trip->setTitle($trip->getTitle());
         $trip->setDescription($trip->getDescription());
         $trip->setDateDeparture($trip->getDateDeparture());
+        $trip->setDateReturn($trip->getDateReturn());
         $trip->setDestination($trip->getDestination());
         $trip->setType($trip->getType());
         $trip->setDifficulty($trip->getDifficulty());
@@ -246,6 +250,7 @@ class TripController extends Controller
             ->add('title', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('description', TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('date_departure', DateTimeType::class, array('attr' => array('class' => 'formcontrol', 'style' => 'margin-bottom:15px')))
+            ->add('date_return', DateTimeType::class, array('attr' => array('class' => 'formcontrol', 'style' => 'margin-bottom:15px')))
             ->add('destination', CountryType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('type', ChoiceType::class, array('choices' => array("Auto-stop" => "Auto-stop",
                 "Aventure" => "Aventure",
@@ -277,6 +282,7 @@ class TripController extends Controller
             $title = $form['title']->getData();
             $description = $form['description']->getData();
             $dateDeparture = $form['date_departure']->getData();
+            $dateReturn = $form['date_return']->getData();
             $destination = $form['destination']->getData();
             $type = $form['type']->getData();
             $difficulty = $form['difficulty']->getData();
@@ -304,6 +310,7 @@ class TripController extends Controller
             $trip->setTitle($title);
             $trip->setDescription($description);
             $trip->setDateDeparture($dateDeparture);
+            $trip->setDateReturn($dateReturn);
             $trip->setDestination($destination);
             $trip->setType($type);
             $trip->setDifficulty($difficulty);
@@ -320,7 +327,7 @@ class TripController extends Controller
 
             $this->addFlash(
                 'notice',
-                'Voyage modifier'
+                'Le Voyage a bien été modifié'
             );
             return $this->redirectToRoute('trips_list');
         }
@@ -386,7 +393,7 @@ class TripController extends Controller
 
         $this->addFlash(
             'notice',
-            'Trip Removed'
+            'Le voyage a bien été supprimé'
         );
         return $this->redirectToRoute('trips_list');
     }
