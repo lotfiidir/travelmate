@@ -2,20 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bb4d7d0a-f418-4d38-bda8-0aa3a98d6c16" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/Resources/views/search/found.html.twig" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/Resources/views/search/not-found.html.twig" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/uploads/ring-alt.svg" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/web/uploads/imageTrips/06f4ee91a42630de4a91c83de30accb3.jpeg" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dataSources/69dc0b47-1cc2-4464-a622-a34fa5ea4177.xml" afterPath="$PROJECT_DIR$/.idea/dataSources/69dc0b47-1cc2-4464-a622-a34fa5ea4177.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Resources/views/template.html.twig" afterPath="$PROJECT_DIR$/app/Resources/views/template.html.twig" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Resources/views/trip/details.html.twig" afterPath="$PROJECT_DIR$/app/Resources/views/trip/details.html.twig" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Resources/views/trip/index.html.twig" afterPath="$PROJECT_DIR$/app/Resources/views/trip/index.html.twig" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Controller/SearchController.php" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/SearchController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Controller/TripController.php" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/TripController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Entity/Trip.php" afterPath="$PROJECT_DIR$/src/AppBundle/Entity/Trip.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Repository/TripRepository.php" afterPath="$PROJECT_DIR$/src/AppBundle/Repository/TripRepository.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/css/style.css" afterPath="$PROJECT_DIR$/web/css/style.css" />
     </list>
     <ignored path="travelmate.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -787,7 +774,7 @@
       <workItem from="1495670904836" duration="3207000" />
       <workItem from="1495714950390" duration="5546000" />
       <workItem from="1495746718858" duration="4388000" />
-      <workItem from="1495806496488" duration="32938000" />
+      <workItem from="1495806496488" duration="33039000" />
     </task>
     <task id="LOCAL-00001" summary="Upload file in trip done !">
       <created>1494800542998</created>
@@ -929,11 +916,18 @@
       <option name="project" value="LOCAL" />
       <updated>1495808715145</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="add filter Contry full name before persist&#10;add image user on each trip">
+      <created>1495856933905</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1495856933906</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="451920000" />
+    <option name="totallyTimeSpent" value="452021000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1044,7 +1038,8 @@
     <MESSAGE value="features travel mate done | remains to be improved" />
     <MESSAGE value="add date return and change description type in text" />
     <MESSAGE value="date return added" />
-    <option name="LAST_COMMIT_MESSAGE" value="date return added" />
+    <MESSAGE value="add filter Contry full name before persist&#10;add image user on each trip" />
+    <option name="LAST_COMMIT_MESSAGE" value="add filter Contry full name before persist&#10;add image user on each trip" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
