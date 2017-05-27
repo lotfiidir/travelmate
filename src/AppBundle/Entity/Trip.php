@@ -112,7 +112,7 @@ class Trip
 
     /**
      *
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User", fetch="EAGER")
      *
      */
     private $user;

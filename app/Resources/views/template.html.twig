@@ -5,6 +5,7 @@
     <!-- /input-group -->
 </div>
 <ul class="nav nav-second-level" id="entitiesNav">
+    <img id="loading-image" src="../uploads/ring-alt.svg" />
 </ul>
 
 <!-- jQuery is necessary -->
@@ -14,11 +15,13 @@
 
     jQuery(document).ready(function () {
         var searchRequest = null;
+        $("#loading-image").css("opacity", "0");
         $("#search").keyup(function () {
             var minlength = 3;
             var that = this;
             var value = $(this).val();
-            var entitySelector = $("#entitiesNav").html('');
+            var entitySelector = $("#entitiesNav").html('<img id="loading-image" src="../uploads/ring-alt.svg" />');
+            $("#loading-image").css("opacity", "0");
             if (value.length >= minlength) {
                 if (searchRequest != null)
                     searchRequest.abort();
@@ -29,25 +32,34 @@
                         'q': value
                     },
                     dataType: "json",
+                    beforeSend: function() {
+                        $("#loading-image").css("opacity", "1");
+
+                    },
                     success: function (msg) {
                         //we need to check if the value is the same
+                        $("#loading-image").css("opacity", "0");
                         if (value == $(that).val()) {
                             var result = msg;
-                            $.each(result, function (key, arr) {
+                            console.log('reesssuuulltt'+result);
+                            entitySelector.append('<li>'+result+'</li>');
+                            /*$.each(result, function (key, arr) {
+
                                 $.each(arr, function (id, value) {
+                                    console.log('reesssuuulltt'+id);
                                     if (key == 'trips') {
                                         if (id != 'error') {
-                                            console.log(value);
                                             entitySelector.append('<li><a href="/trip/details/' + id + '">' + value + '</a></li>');
                                         } else {
                                             entitySelector.append('<li class="errorLi">' + value + '</li>');
                                         }
                                     }
                                 });
-                            });
+                            });*/
                         }
                     },
                     error: function () {
+                        $("#loading-image").css("opacity", "0");
                     }
                 });
             }

@@ -10,6 +10,17 @@ namespace AppBundle\Repository;
  */
 class TripRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getUserFor($id)
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT u
+                 FROM AppBundle:User u
+                 WHERE :id'
+            )
+            ->setParameter('id', '%' . $id . '%')
+            ->getResult();
+    }
     public function findTripByString($str)
     {
         /*$words = explode(" ", $str);
@@ -22,18 +33,16 @@ class TripRepository extends \Doctrine\ORM\EntityRepository
      OR t.description LIKE :word
      OR t.destination LIKE :word";
         }*/
-        /*return $this->getEntityManager()
+        return $this->getEntityManager()
             ->createQuery(
                 'SELECT t
                  FROM AppBundle:Trip t
-                 WHERE t.title LIKE :str
-                 OR t.description LIKE :str
-                 OR t.destination LIKE :str'
+                 WHERE t.destination LIKE :str'
             )
             ->setParameter('str', '%' . $str . '%')
-            ->getResult();*/
+            ->getResult();
 
-        $string = str_replace(' ', '-', $str);
+        /*$string = str_replace(' ', '-', $str);
 
         $stringClean = preg_replace('/[^A-Za-z0-9\-]/', ' ', $string);
         //        $string = str_replace(' ', ',', $stringClean);
@@ -56,7 +65,7 @@ class TripRepository extends \Doctrine\ORM\EntityRepository
             ->setParameters($parameters)
             ->getQuery();
         $trips = $query->getResult();
-        return $trips;
+        return $trips;*/
 
         /*return $this->createQueryBuilder('t')
             ->select('t')

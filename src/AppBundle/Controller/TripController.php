@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Trip;
 use AppBundle\Entity\User;
+use AppBundle\Twig\AppExtension;
 use Ivory\GoogleMap\Base\Coordinate;
 use Ivory\GoogleMap\Event\Event;
 use Ivory\GoogleMap\Map;
@@ -28,6 +29,8 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,8 +51,17 @@ class TripController extends Controller
             ->getRepository('AppBundle:Trip')
             ->findAll();
 
+       /* $search = $this->getDoctrine()->getManager();
+        $reqString = $request->get('q');
+        $trips = $search->getRepository('AppBundle:Trip')->findTripByString($reqString);
+*/
+        $users = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->findAll();
+    var_dump($trips);
         return $this->render('trip/index.html.twig', array(
-            'trips' => $trips
+            'trips' => $trips,
+            'users' => $users
         ));
     }
 
@@ -156,6 +168,8 @@ class TripController extends Controller
             $dateDeparture = $form['date_departure']->getData();
             $dateReturn = $form['date_return']->getData();
             $destination = $form['destination']->getData();
+            $filter = new AppExtension();
+            $destination = $filter->countryNameFilter($destination);
             $type = $form['type']->getData();
             $difficulty = $form['difficulty']->getData();
             $price = $form['price']->getData();
@@ -245,6 +259,7 @@ class TripController extends Controller
         $trip->setCreateDate($now);
         $oldfile = $trip->getImageTrip();
         $trip->setTraces($trip->getTraces());
+        dump($trip);
 
         $form = $this->createFormBuilder($trip)
             ->add('title', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
@@ -269,12 +284,19 @@ class TripController extends Controller
             ), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('difficulty', ChoiceType::class, array('choices' => array('Facile' => 'Facile', 'Moyen' => 'Moyen', 'Dur' => 'Dur'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('price', ChoiceType::class, array('choices' => array('Bas' => 'Bas', 'Moyennement bas' => 'Moyennement bas', 'Moyen' => 'Moyen', 'Moyennement eleve' => 'Moyennement élevé', 'Elevé' => 'Élevé'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
-            ->add('imageTrip', FileType::class, array('data_class' => null, 'label' => 'Image du voyage', 'attr' => array('class' => 'btn btn-file', 'style' => 'margin-bottom:15px')))
+            ->add('imageTrip', FileType::class, array('data_class' => null, 'block_name' => 'test' , 'label' => 'Image du voyage', 'attr' => array('class' => 'btn btn-file', 'style' => 'margin-bottom:15px')))
             ->add('traces', HiddenType::class, array('label' => 'map', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px'), 'required' => false))
             ->add('save', SubmitType::class, array('label' => 'Modifier le voyage', 'attr' => array('class' => 'btn btn-primary', 'style' => 'margin-bottom:15px')))
             ->getForm();
 
+        $path  = 'uploads/imageTrips/'.$trip->getImageTrip();
+        $original_name  = $trip->getImagePath();
+        $error   = null;
+        $test   = true;
+        $file = new UploadedFile($path, $original_name, '', "", null,true);
+        $request->files->set("name", $file);
 
+        dump($form['imageTrip']);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -284,6 +306,8 @@ class TripController extends Controller
             $dateDeparture = $form['date_departure']->getData();
             $dateReturn = $form['date_return']->getData();
             $destination = $form['destination']->getData();
+            $filter = new AppExtension();
+            $destination = $filter->countryNameFilter($destination);
             $type = $form['type']->getData();
             $difficulty = $form['difficulty']->getData();
             $price = $form['price']->getData();
@@ -327,7 +351,7 @@ class TripController extends Controller
 
             $this->addFlash(
                 'notice',
-                'Le Voyage a bien été modifié'
+                'Le Voyage à été modifié'
             );
             return $this->redirectToRoute('trips_list');
         }

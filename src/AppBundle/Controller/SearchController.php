@@ -32,10 +32,16 @@ class SearchController extends Controller
         $search = $this->getDoctrine()->getManager();
         $reqString = $request->get('q');
         $trips = $search->getRepository('AppBundle:Trip')->findTripByString($reqString);
+
+        var_dump($trips);
+
         if (!$trips){
-            $result['trips']['error'] = "Voyage non trouvé !";
+            $notFound = $this->forward('AppBundle:search:not-found.html.twig')->getContent();
+            $result['trips']['error'] = "Voyage non trouvé";
+            dump($result);
         } else {
-            $result['trips'] = $this->getRealTrips($trips);
+            //$result['trips'] = $this->getRealTrips($trips);
+            $result = $this->found($trips)->getContent();
         }
         /*
         return $this->render('template.html.twig', array(
@@ -43,7 +49,28 @@ class SearchController extends Controller
         ));*/
         return new Response(json_encode($result));
     }
+    public function notFound($trip)
+    {
+        return $this->render('search/not-found.html.twig', array(
+            'trip' => $trip));
+    }
+    public function found($trips)
+    {
 
+        foreach ($trips as $trip){
+            $trips = $trip;
+
+        }
+
+        $userId = $trips->getUser()->getId();
+        $user = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->find($userId);
+        var_dump($user);
+        return $this->render('search/found.html.twig', array(
+            'trip' => $trips,
+            'user', $user));
+    }
     /**
      * @Route("trips/search", name="search")
      * @Method("GET")

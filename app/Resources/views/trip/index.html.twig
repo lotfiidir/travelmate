@@ -3,17 +3,24 @@
 {% block body %}
     <section>
         <div class="col-md-12">
-            {{  include ('template.html.twig') }}
+            {{ include ('template.html.twig') }}
         </div>
     </section>
     {% for trip in trips %}
         <div class="col-md-4 col-trip">
+            {#{% if trip.user %}
+                {{ trip.user.name }}
+            {% endif %}#}
+            {% if trip.user %}
+                <img src="../../uploads/user/profilepics/{{ trip.user.imageName }}" alt="image de {{ trip.user.username }}" width="100">
+            {% endif %}
+            <h2>{{ trip.user }}</h2>
             <h4>{{ trip.title }}</h4>
             {% if (trip.imageTrip) %}
                 <img class="col-md-4" src="uploads/imageTrips/{{ trip.imageTrip }}" alt="">
             {% endif %}
             <p>{{ trip.description[:100] }}</p>
-            <p>{{ trip.destination|countryName }}</p>
+            <p>{{ trip.destination }}</p>
             <p>{{ trip.dateDeparture| date("d.m.Y") }}</p>
             <a href="trip/details/{{ trip.id }}" class="btn btn-primary">Voir</a>
         </div>
