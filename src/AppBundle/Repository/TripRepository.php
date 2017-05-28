@@ -21,6 +21,7 @@ class TripRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('id', '%' . $id . '%')
             ->getResult();
     }
+
     public function findTripByString($str)
     {
         /*$words = explode(" ", $str);

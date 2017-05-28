@@ -1,10 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block title %}Travel Mate{% endblock %}
 {% block body %}
-    <section>
-        <div class="col-md-12">
-            {{ include ('template.html.twig') }}
-        </div>
+    <section class="col-md-12 search">
+        {{ include ('template.html.twig') }}
     </section>
     {% for trip in trips %}
         <div class="col-md-4 col-trip">
@@ -12,17 +10,23 @@
                 {{ trip.user.name }}
             {% endif %}#}
             {% if trip.user %}
-                <img src="../../uploads/user/profilepics/{{ trip.user.imageName }}" alt="image de {{ trip.user.username }}" width="100">
+                <div class="user-image">
+                    <img src="../../uploads/user/profilepics/{{ trip.user.imageName }}"
+                         alt="image de {{ trip.user.username }}" width="100">
+                </div>
             {% endif %}
-            <h2>{{ trip.user }}</h2>
-            <h4>{{ trip.title }}</h4>
-            {% if (trip.imageTrip) %}
-                <img class="col-md-4" src="uploads/imageTrips/{{ trip.imageTrip }}" alt="">
-            {% endif %}
-            <p>{{ trip.description[:100] }}</p>
-            <p>{{ trip.destination }}</p>
-            <p>{{ trip.dateDeparture| date("d.m.Y") }}</p>
-            <a href="trip/details/{{ trip.id }}" class="btn btn-primary">Voir</a>
+            <div class="trip-image">
+                {% if (trip.imageTrip) %}
+                    <img class="col-md-4" src="uploads/imageTrips/{{ trip.imageTrip }}" alt="{{ trip.destination }}">
+                {% endif %}
+            </div>
+            <div class="trip-content">
+                <h2>{{ trip.title }}</h2>
+                <p>{{ trip.description[:100] }}</p>
+                <p>{{ trip.destination }}</p>
+                <p>{{ trip.dateDeparture| date("d.m.Y") }}</p>
+                <a href="trip/details/{{ trip.id }}" class="voir-trip">Voir</a>
+            </div>
         </div>
     {% endfor %}
 {% endblock %}

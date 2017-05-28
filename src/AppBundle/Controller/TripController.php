@@ -58,7 +58,6 @@ class TripController extends Controller
         $users = $this->getDoctrine()
             ->getRepository('AppBundle:User')
             ->findAll();
-    var_dump($trips);
         return $this->render('trip/index.html.twig', array(
             'trips' => $trips,
             'users' => $users
@@ -421,4 +420,21 @@ class TripController extends Controller
         );
         return $this->redirectToRoute('trips_list');
     }
+    /**
+     * @Route("/profile", name="trip_user")
+     */
+    public function tripForUserAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->get('security.token_storage')->getToken()->getUser()->getId();
+       /* $trip = $this->getDoctrine()
+            ->getRepository('AppBundle:Trip')
+            ->findAll($id);*/
+        $trips = $em->getRepository('AppBundle:Trip')->findBy(array('user' => $user));
+        return $this->render('trip/tripUser.html.twig', array(
+            'trips' => $trips,
+        ));
+
+    }
+
 }

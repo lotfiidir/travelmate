@@ -1,6 +1,8 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
 <div class="fos_user_user_show">
+    <img src="{{ asset('uploads/user/profilepics/' ~ user.imageName) }}" alt="">
     <p>{{ 'profile.show.username'|trans }}: {{ user.username }}</p>
     <p>{{ 'profile.show.email'|trans }}: {{ user.email }}</p>
 </div>
+{{ render(controller('AppBundle:Trip:tripForUser')) }}
