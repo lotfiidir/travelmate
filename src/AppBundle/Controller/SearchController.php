@@ -33,7 +33,7 @@ class SearchController extends Controller
         $reqString = $request->get('q');
         $trips = $search->getRepository('AppBundle:Trip')->findTripByString($reqString);
 
-        var_dump($trips);
+
 
         if (!$trips){
             $notFound = $this->forward('AppBundle:search:not-found.html.twig')->getContent();
@@ -56,20 +56,16 @@ class SearchController extends Controller
     }
     public function found($trips)
     {
-
         foreach ($trips as $trip){
             $trips = $trip;
-
         }
-
         $userId = $trips->getUser()->getId();
         $user = $this->getDoctrine()
             ->getRepository('AppBundle:User')
             ->find($userId);
-        var_dump($user);
+        //var_dump($user);
         return $this->render('search/found.html.twig', array(
-            'trip' => $trips,
-            'user', $user));
+            'trip' => $trips));
     }
     /**
      * @Route("trips/search", name="search")

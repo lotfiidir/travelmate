@@ -1,30 +1,3 @@
-/*var marker = new google.maps.Marker({
- position: e.latLng,
- map: objMap,
- draggable: true
- });
- console.log(objMap);
- console.log(marker);
- markers.push(marker);
- var element = document.getElementById("markers");
- var span = document.createElement('span');
- var countSpan = element.childElementCount + 1;
- span.setAttribute('class', countSpan-1);
- var content = document.createTextNode(countSpan);
- span.appendChild(content);
- element.appendChild(span);
- getMarkers(markers);
- }
- function getMarkers(markers) {
- return markers;
- }
-
- document.getElementById("markers").addEventListener("mouseover", function (e) {
- var classMarker = e.target.getAttribute('class');
- var thisMarker = getMarkers(markers);
-
- });*/
-
 window.onload = function () {
 
 
@@ -35,18 +8,55 @@ window.onload = function () {
 //var labelIndex = 0;
     var uniqueId = 0;
     var poly;
+    var style = [{
+        "featureType": "water",
+        "elementType": "geometry.fill",
+        "stylers": [{"visibility": "on"}, {"color": "#31c2f3"}]
+    }, {
+        "featureType": "administrative",
+        "elementType": "geometry.fill",
+        "stylers": [{"visibility": "on"}]
+    }, {"featureType": "administrative", "elementType": "labels.text.fill", "stylers": [{"color": "#4a1942"}]}];
 
     var directionsService = new google.maps.DirectionsService;
     var directionsDisplay = new google.maps.DirectionsRenderer;
     var map = new google.maps.Map(document.getElementById('map_canvas'), {
         zoom: 2,
+        styles: style,
         center: {lat: 0, lng: 0}
     });
     directionsDisplay.setMap(map);
 
+    if (document.getElementById("form_traces").getAttribute('value') != null) {
+        var getMarker = document.getElementById("form_traces").getAttribute('value');
+        if (getMarker.length) {
+            var posiMarker = JSON.parse(getMarker);
+            for (var i = 0; i < posiMarker.length; i++) {
+                var pos = posiMarker[i].split(',');
+                lat = parseFloat(pos[0]);
+                lng = parseFloat(pos[1]);
+                console.log(pos);
+                var myLatlng = new google.maps.LatLng(lat, lng);
+                console.log("test");
+                console.log(posiMarker[i]);
+                var marker = new google.maps.Marker({
+                    position: myLatlng,
+                    //label: labels[labelIndex++ % labels.length],
+                    map: map,
+                    draggable: false
+                });
+                markers.push(marker);
+                if (markers.length > 1) {
+                    addPoly(markers);
+                }
+            }
+        }
+    }
+
     map.addListener("click", function (event) {
         addMarker(event.latLng);
     });
+
     function addPoly(markers) {
         var tracePoly = [];
         var end = markers[markers.length - 1];
@@ -66,7 +76,6 @@ window.onload = function () {
         polyArray.push(poly);
         for (i = 0; i < polyArray.length; i++) {
             polyArray[i].setMap(map); //or line[i].setVisible(false);
-            console.log("foooorrr" + polyArray[i]);
         }
 
         //console.log(polyArray);
@@ -74,6 +83,7 @@ window.onload = function () {
 
     function addMarker(location) {
         //console.log(location.lat());
+
         var marker = new google.maps.Marker({
             position: location,
             //label: labels[labelIndex++ % labels.length],
@@ -84,21 +94,13 @@ window.onload = function () {
         var isD = false;
         if (markers.length > 1) {
             calculate(markers, directionsService, directionsDisplay);
-            var isD = true;
+            isD = true;
         }
         marker.id = uniqueId;
         uniqueId++;
-
-        /*var element = document.getElementById("markers");
-         var span = document.createElement('span');
-         var countSpan = element.childElementCount + 1;
-         span.setAttribute('class', countSpan - 1);
-         var content = document.createTextNode(countSpan);
-         span.appendChild(content);
-         element.appendChild(span);*/
-        google.maps.event.addListener(marker, 'click', function (event) {
-            infowin(map, marker, event);
-        });
+        /*google.maps.event.addListener(marker, 'click', function (event) {
+         infowin(map, marker, event);
+         });*/
         var direction = [];
         if (isD) {
             direction.push(directionsService);
@@ -108,32 +110,16 @@ window.onload = function () {
         exportMap(markers);
     }
 
-    function infowin(map, marker, event) {
-        var lanLng = "<p>Latitude :" + event.latLng.lat() + "</p><p>Longitude :" + event.latLng.lng() + "</p>";
-        lanLng += "<input id='delete-marker' class='btn btn-default' type='button' value='supprimer'>";
-        var infowindow = new google.maps.InfoWindow({
-            content: lanLng
-        });
-        infowindow.open(map, marker);
-        if (document.getElementById("delete-marker")) {
-            var btnSupMarker = document.getElementById("delete-marker");
-            btnSupMarker.addEventListener("click", supprimerMarker(marker.id));
-        }
-    }
-
-    //new google.maps.event.trigger( marker, 'click' );
-
-    /*var elementSpan = document.getElementById("markers");
-     elementSpan.addEventListener('click', function (e) {
-     var classMarker = e.target.getAttribute('class');
-     toggleBounce(markers[classMarker]);
+    /*function infowin(map, marker, event) {
+     var lanLng = "<p>Latitude :" + event.latLng.lat() + "</p><p>Longitude :" + event.latLng.lng() + "</p>";
+     lanLng += "<input id='delete-marker' class='btn btn-default' type='button' value='supprimer'>";
+     var infowindow = new google.maps.InfoWindow({
+     content: lanLng
      });
-
-     function toggleBounce(marker) {
-     if (marker.getAnimation() !== null) {
-     marker.setAnimation(null);
-     } else {
-     marker.setAnimation(google.maps.Animation.BOUNCE);
+     infowindow.open(map, marker);
+     if (document.getElementById("delete-marker")) {
+     var btnSupMarker = document.getElementById("delete-marker");
+     btnSupMarker.addEventListener("click", supprimerMarker(marker.id));
      }
      }*/
 
@@ -149,12 +135,12 @@ window.onload = function () {
                  element.removeChild(span);*/
                 //labelIndex--;
                 //calculate(markers);
-                return;
+                return
             }
         }
         poly.setMap(null);
+        console.log(polyArray);
         polyArray.pop();
-        //console.log(poly);
     }
 
     function setMapOnAll(map) {
@@ -221,10 +207,10 @@ window.onload = function () {
         var newMarker = [];
         //console.log(marker);
 
-        for(i=0;i<marker.length;i++){
+        for (i = 0; i < marker.length; i++) {
             var lat = marker[i].getPosition().lat();
             var lng = marker[i].getPosition().lng();
-            coor.push(lat+','+lng);
+            coor.push(lat + ',' + lng);
         }
         console.log(coor);
         xhr.send(JSON.stringify(coor));

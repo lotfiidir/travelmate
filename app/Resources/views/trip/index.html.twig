@@ -17,13 +17,15 @@
             {% endif %}
             <div class="trip-image">
                 {% if (trip.imageTrip) %}
-                    <img class="col-md-4" src="uploads/imageTrips/{{ trip.imageTrip }}" alt="{{ trip.destination }}">
+                    <img class="col-md-4" src="{{ asset('uploads/imageTrips/' ~trip.imageTrip) }}" alt="">
                 {% endif %}
             </div>
             <div class="trip-content">
                 <h2>{{ trip.title }}</h2>
                 <p>{{ trip.description[:100] }}</p>
-                <p>{{ trip.destination }}</p>
+                {% for dest in trip.destination %}
+                    <span>{{ dest }}</span>
+                {% endfor %}
                 <p>{{ trip.dateDeparture| date("d.m.Y") }}</p>
                 <a href="trip/details/{{ trip.id }}" class="voir-trip">Voir</a>
             </div>

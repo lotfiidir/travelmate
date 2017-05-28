@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
@@ -13,11 +12,13 @@
 
     <!-- Bootstrap core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    {% block stylesheets %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" rel="stylesheet">
+        {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
-
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="{{ asset('js/script.js') }}"></script>
 </head>
 
 <body>
@@ -63,6 +64,9 @@
                             <li>
                                 <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
                             </li>
+                            <li>
+                                <a href="/register">S'inscrire</a>
+                            </li>
                         </ul>
                     </li>
                 {% endif %}
@@ -86,7 +90,7 @@
 </div><!-- /.container -->
 
 {% block javascripts %}
-    <script src="{{ asset('js/script.js') }}"></script>
+
 {% endblock %}
 
 </body>

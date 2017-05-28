@@ -55,7 +55,7 @@ class Trip
     /**
      * @var string
      *
-     * @ORM\Column(name="destination", type="text", length=255)
+     * @ORM\Column(name="destination", type="json_array")
      */
     private $destination;
 

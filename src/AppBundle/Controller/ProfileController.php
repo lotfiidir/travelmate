@@ -13,6 +13,6 @@ class ProfileController extends BaseController
      */
     public function editAction(Request $request)
     {
-        var_dump($request); die();
+
     }
 }

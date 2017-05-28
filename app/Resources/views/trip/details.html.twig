@@ -2,7 +2,8 @@
 {% block title %}Travel Mate | {{ trip.title }}{% endblock %}
 
 {% block body %}
-    <a href="../../user/details/{{ user.id }}"><img src="../../uploads/user/profilepics/{{ user.imageName }}" alt="image de {{ user.username }}"></a>
+    <a href="../../user/details/{{ user.id }}"><img src="../../uploads/user/profilepics/{{ user.imageName }}"
+                                                    alt="image de {{ user.username }}"></a>
     <a class="btn btn-default" href="/">Retour à la liste</a>
     <hr>
     <h2 class="page-header">{{ trip.title }}</h2>
@@ -12,9 +13,16 @@
     <div class="row">
         <div class="col-md-6">
             <ul class="list-group">
-                <li class="list-group-item">Destionation: {{ trip.destination }}</li>
+                <li class="list-group-item">Destionation:
+                    {% for dest in trip.destination %}
+                        <span>{{ dest }}</span>
+                    {% endfor %}
+                </li>
                 <li class="list-group-item">Date de départ:
-                    <strong>{{ trip.dateDeparture|date('d.m.Y, g:i a') }}</strong>
+                    <strong>{{ trip.dateDeparture|date('d.m.Y') }}</strong>
+                </li>
+                <li class="list-group-item">Date Retour:
+                    <strong>{{ trip.dateReturn|date('d.m.Y') }}</strong>
                 </li>
                 <li class="list-group-item">Type de voyage: <strong>{{ trip.type }}</strong></li>
                 <li class="list-group-item">Difficulté: <strong>{{ trip.difficulty }}</strong></li>
@@ -33,9 +41,9 @@
         </div>
     </div>
     {% if is_granted('ROLE_USER') %}
-    <div class="row">
-        <a href="../../trip/edit/{{ trip.id }}" class="btn btn-success">Modifier</a>
-        <a href="../../trip/delete/{{ trip.id }}" class="btn btn-danger">Supprimer</a>
-    </div>
-{% endif %}
+        <div class="row">
+            <a href="../../trip/edit/{{ trip.id }}" class="btn btn-success">Modifier</a>
+            <a href="../../trip/delete/{{ trip.id }}" class="btn btn-danger">Supprimer</a>
+        </div>
+    {% endif %}
 {% endblock %}

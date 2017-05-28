@@ -1,15 +1,22 @@
-<h2>Vos voyages</h2>
+<h2>Mes voyages</h2>
 {% for trip in trips %}
-    <div class="trip-image">
-        {% if (trip.imageTrip) %}
-            <img class="col-md-4" src="{{ asset('uploads/imageTrips/' ~ trip.imageTrip)}}" alt="{{ trip.destination }}">
-        {% endif %}
-    </div>
-    <div class="trip-content">
-        <h2>{{ trip.title }}</h2>
-        <p>{{ trip.description[:100] }}</p>
-        <p>{{ trip.destination }}</p>
-        <p>{{ trip.dateDeparture| date("d.m.Y") }}</p>
-        <a href="trip/details/{{ trip.id }}" class="voir-trip">Voir</a>
+    <div class="col-md-4 col-trip">
+        {#{% if trip.user %}
+            {{ trip.user.name }}
+        {% endif %}#}
+        <div class="trip-image">
+            {% if (trip.imageTrip) %}
+                <img class="col-md-4" src="{{ asset('uploads/imageTrips/' ~trip.imageTrip) }}" alt="">
+            {% endif %}
+        </div>
+        <div class="trip-content">
+            <h2>{{ trip.title }}</h2>
+            <p>{{ trip.description[:100] }}</p>
+            {% for dest in trip.destination %}
+                <span>{{ dest }}</span>
+            {% endfor %}
+            <p>{{ trip.dateDeparture| date("d.m.Y") }}</p>
+            <a href="trip/details/{{ trip.id }}" class="voir-trip">Voir</a>
+        </div>
     </div>
 {% endfor %}

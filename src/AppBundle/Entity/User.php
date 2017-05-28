@@ -51,6 +51,12 @@ class User extends BaseUser
      */
     private $imageName;
 
+    /**
+     * @ORM\Column(type="integer", length=255)
+     *
+     * @var integer
+     */
+    private $age;
 
     public function __construct()
     {
@@ -144,4 +150,21 @@ class User extends BaseUser
 
         return $this;
     }
+
+    /**
+     * @return integer
+     */
+    public function getAge()
+    {
+        return $this->age;
+    }
+
+    /**
+     * @param integer $age
+     */
+    public function setAge($age)
+    {
+        $this->age = $age;
+    }
+
 }

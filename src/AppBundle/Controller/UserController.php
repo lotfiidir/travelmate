@@ -19,9 +19,13 @@ class UserController extends Controller
         $user = $this->getDoctrine()
             ->getRepository('AppBundle:User')
             ->find($id);
-
+        $userId = $user->getId();
+        $trips = $this->getDoctrine()
+            ->getRepository('AppBundle:Trip')
+            ->findBy(array('user' => $userId));
         return $this->render('user/show.html.twig', array(
-            'user' => $user
+            'user' => $user,
+            'trips' => $trips
         ));
     }
 }

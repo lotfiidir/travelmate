@@ -150,7 +150,7 @@ section.search .input-group input[placeholder] {
     margin-bottom: 120px;
 }
 
-.col-trip .user-image {
+ .user-image {
     width: 100px;
     height: 100px;
     overflow: hidden;
@@ -197,6 +197,15 @@ section.search .input-group input[placeholder] {
 .col-trip .trip-content {
     text-align: center;
 }
+.col-trip .trip-content p::before {
+    content: '';
+    display: block;
+    width:40px;
+    height:2px;
+    margin:10px auto;
+    background-color: #4A1942;
+}
+
 
 .col-trip .voir-trip {
     width: 60%;
@@ -293,3 +302,11 @@ section.search .input-group input[placeholder] {
     border-top-right-radius: 0;
 }
 
+.fos_user_user_show {
+    padding: 40px;
+    background-color: #EBEBEB;
+    border-radius: 10px;
+}
+.fos_user_user_show h2{
+    text-align: center;
+}

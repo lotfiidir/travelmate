@@ -2,21 +2,71 @@
 {% block title %}Travel Mate | Modification de {{ trip.title }}{% endblock %}
 {% block body %}
     <h2 class="page-header">Modification du voyage</h2>
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
-    <div id="map">
-        <div id="markers"></div>
-        <div id="map_canvas">
+    {% block form_row %}
+        {{ form_start(form) }}
+        <div class="form_row">
+            {{ form_label(form.title) }}
+            {{ form_errors(form.title) }}
+            {{ form_widget(form.title) }}
         </div>
-        <div id="floating-sup">
-            <div id="nettoyer" class="btn btn-danger" >Nettoyer la carte</div>
+        <div class="form_row">
+            {{ form_label(form.description) }}
+            {{ form_errors(form.description) }}
+            {{ form_widget(form.description) }}
         </div>
-    </div>
+        <div class="form_row">
+            {{ form_label(form.date_departure) }}
+            {{ form_errors(form.date_departure) }}
+            {{ form_widget(form.date_departure) }}
+        </div>
+        <div class="form_row">
+            {{ form_label(form.date_return) }}
+            {{ form_errors(form.date_return) }}
+            {{ form_widget(form.date_return) }}
+        </div>
+        <div class="form_row">
+            {{ form_label(form.destination) }}
+            {{ form_errors(form.destination) }}
+            {{ form_widget(form.destination) }}
+        </div>
+        <div class="form_row">
+            {{ form_label(form.type) }}
+            {{ form_errors(form.type) }}
+            {{ form_widget(form.type) }}
+        </div>
+        <div class="form_row">
+            {{ form_label(form.difficulty) }}
+            {{ form_errors(form.difficulty) }}
+            {{ form_widget(form.difficulty) }}
+        </div>
+        <div class="form_row">
+            {{ form_label(form.price) }}
+            {{ form_errors(form.price) }}
+            {{ form_widget(form.price) }}
+        </div>
+        <div class="form_row">
+            {{ form_label(form.imageTrip) }}
+            {{ form_errors(form.imageTrip) }}
+            {{ form_widget(form.imageTrip) }}
+        </div>
+        <div id="map">
+            <div id="markers"></div>
+            <div id="map_canvas">
+            </div>
+            <div id="floating-sup">
+                <div id="nettoyer" class="btn btn-danger" >Nettoyer la carte</div>
+            </div>
+        </div>
+        {{ form_label(form.save) }}
+        {{ form_widget(form.save) }}
+        {{ form_end(form) }}
+    {% endblock form_row %}
 {% endblock %}
 {% block javascripts %}
     <script src="{{ asset('js/maps.js') }}"></script>
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnX_MphD697QVoFq4mKvnpxhpyHQm2vOg">
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/locales/bootstrap-datepicker.fr.min.js"></script>
 {% endblock %}

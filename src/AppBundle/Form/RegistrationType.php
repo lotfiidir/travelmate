@@ -15,7 +15,8 @@ class RegistrationType extends AbstractType
     {
         $builder->add('name', TextType::class, array('label' => false, 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Nom et Prénom')))
             ->add('description', TextareaType::class, array('label' => false, 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Apropos de vous...')))
-            ->add('imageFile', VichImageType::class);
+            ->add('age', TextType::class, array('label' => false, 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Votre age')))
+            ->add('imageFile', VichImageType::class, array('attr' => array('style' => 'margin-bottom:15px')));
     }
 
     public function  getParent()

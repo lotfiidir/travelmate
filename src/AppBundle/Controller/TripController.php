@@ -58,6 +58,7 @@ class TripController extends Controller
         $users = $this->getDoctrine()
             ->getRepository('AppBundle:User')
             ->findAll();
+
         return $this->render('trip/index.html.twig', array(
             'trips' => $trips,
             'users' => $users
@@ -76,11 +77,11 @@ class TripController extends Controller
         $trip->setUser($user->getId());
         dump($trip->getUser());*/
         $form = $this->createFormBuilder($trip)
-            ->add('title', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter un titre...')))
-            ->add('description', TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter une description...')))
-            ->add('date_departure', DateTimeType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
-            ->add('date_return', DateTimeType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
-            ->add('destination', CountryType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('title', TextType::class, array('label' => 'Titre', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter un titre...')))
+            ->add('description', TextareaType::class, array('label' => 'Description', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter une description...')))
+            ->add('date_departure', DateTimeType::class, array('label' => 'Date départ', 'widget' => 'single_text', 'attr' => array('class' => 'form-control datepicker', 'style' => 'margin-bottom:15px', 'placeholder' => 'JJ-MM-AAAA')))
+            ->add('date_return', DateTimeType::class, array('label' => 'Date retour', 'widget' => 'single_text','attr' => array('class' => 'form-control datepicker', 'style' => 'margin-bottom:15px', 'placeholder' => 'JJ-MM-AAAA')))
+            ->add('destination', CountryType::class, array('label' => 'Destination', 'multiple' => true, 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('type', ChoiceType::class, array('choices' => array("Auto-stop" => "Auto-stop",
                 "Aventure" => "Aventure",
                 "Camping sauvage" => "Camping sauvage",
@@ -95,12 +96,12 @@ class TripController extends Controller
                 "Road trip" => "Road trip",
                 "Tour du monde" => "Tour du monde",
                 "Voyage experimental" => "Voyage expérimental",
-            ), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
-            ->add('difficulty', ChoiceType::class, array('choices' => array('Facile' => 'Facile', 'Moyen' => 'Moyen', 'Dur' => 'Dur'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
-            ->add('price', ChoiceType::class, array('choices' => array('Bas' => 'Bas', 'Moyennement bas' => 'Moyennement bas', 'Moyen' => 'Moyen', 'Moyennement eleve' => 'Moyennement élevé', 'Elevé' => 'Élevé'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ), 'label' => 'Type', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('difficulty', ChoiceType::class, array('choices' => array('Facile' => 'Facile', 'Moyen' => 'Moyen', 'Dur' => 'Dur'), 'label' => 'Difficulté', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('price', ChoiceType::class, array('choices' => array('Bas' => 'Bas', 'Moyennement bas' => 'Moyennement bas', 'Moyen' => 'Moyen', 'Moyennement eleve' => 'Moyennement élevé', 'Elevé' => 'Élevé'), 'label' => 'Prix', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('imageTrip', FileType::class, array('data_class' => null, 'label' => 'Image du voyage', 'attr' => array('class' => 'file', 'style' => 'margin-bottom:15px')))
             ->add('traces', HiddenType::class, array('label' => 'map', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px'), 'required' => false))
-            ->add('save', SubmitType::class, array('label' => 'Créer le voyage', 'attr' => array('class' => 'btn btn-primary', 'style' => 'margin-bottom:15px')))
+            ->add('save', SubmitType::class, array('label' => 'Créer le voyage', 'attr' => array('class' => 'btn btn-trip-submit', 'style' => 'margin-bottom:15px')))
             ->getForm();
 //////////->
         //$map = new Map();
@@ -157,7 +158,7 @@ class TripController extends Controller
         //$map->getEventManager()->addEvent($event);
         //var_dump($map);
 
-
+dump($form);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -166,9 +167,12 @@ class TripController extends Controller
             $description = $form['description']->getData();
             $dateDeparture = $form['date_departure']->getData();
             $dateReturn = $form['date_return']->getData();
-            $destination = $form['destination']->getData();
+            var_dump($form['destination']->getData());
+            $destinationArr = $form['destination']->getData();
             $filter = new AppExtension();
-            $destination = $filter->countryNameFilter($destination);
+            foreach ($destinationArr as $item) {
+                $destination = $filter->countryNameFilter($item);
+            }
             $type = $form['type']->getData();
             $difficulty = $form['difficulty']->getData();
             $price = $form['price']->getData();
@@ -186,7 +190,7 @@ class TripController extends Controller
             $trip->setDescription($description);
             $trip->setDateDeparture($dateDeparture);
             $trip->setDateReturn($dateReturn);
-            $trip->setDestination($destination);
+            $trip->setDestination(json_encode($destination));
             $trip->setType($type);
             $trip->setDifficulty($difficulty);
             $trip->setPrice($price);
@@ -261,11 +265,11 @@ class TripController extends Controller
         dump($trip);
 
         $form = $this->createFormBuilder($trip)
-            ->add('title', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
-            ->add('description', TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
-            ->add('date_departure', DateTimeType::class, array('attr' => array('class' => 'formcontrol', 'style' => 'margin-bottom:15px')))
-            ->add('date_return', DateTimeType::class, array('attr' => array('class' => 'formcontrol', 'style' => 'margin-bottom:15px')))
-            ->add('destination', CountryType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('title', TextType::class, array('label' => 'Titre', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter un titre...')))
+            ->add('description', TextareaType::class, array('label' => 'Description', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter une description...')))
+            ->add('date_departure', DateTimeType::class, array('label' => 'Date départ', 'widget' => 'single_text', 'attr' => array('class' => 'form-control datepicker', 'style' => 'margin-bottom:15px', 'placeholder' => 'JJ-MM-AAAA')))
+            ->add('date_return', DateTimeType::class, array('label' => 'Date retour', 'widget' => 'single_text','attr' => array('class' => 'form-control datepicker', 'style' => 'margin-bottom:15px', 'placeholder' => 'JJ-MM-AAAA')))
+            ->add('destination', CountryType::class, array('label' => 'Destination', 'multiple' => true, 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('type', ChoiceType::class, array('choices' => array("Auto-stop" => "Auto-stop",
                 "Aventure" => "Aventure",
                 "Camping sauvage" => "Camping sauvage",
@@ -273,19 +277,19 @@ class TripController extends Controller
                 "Evasion" => "Evasion",
                 "Excursion" => "Excursion",
                 "Exploration" => "Exploration",
-                "Expédition" => "Expédition",
+                "Expedition" => "Expédition",
                 "Navigation" => "Navigation",
                 "Promenade" => "Promenade",
-                "Randonnée pédestre" => "Randonnée pédestre",
+                "Randonnee pedestre" => "Randonnée pédestre",
                 "Road trip" => "Road trip",
                 "Tour du monde" => "Tour du monde",
-                "Voyage expérimental" => "Voyage expérimental",
-            ), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
-            ->add('difficulty', ChoiceType::class, array('choices' => array('Facile' => 'Facile', 'Moyen' => 'Moyen', 'Dur' => 'Dur'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
-            ->add('price', ChoiceType::class, array('choices' => array('Bas' => 'Bas', 'Moyennement bas' => 'Moyennement bas', 'Moyen' => 'Moyen', 'Moyennement eleve' => 'Moyennement élevé', 'Elevé' => 'Élevé'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
-            ->add('imageTrip', FileType::class, array('data_class' => null, 'block_name' => 'test' , 'label' => 'Image du voyage', 'attr' => array('class' => 'btn btn-file', 'style' => 'margin-bottom:15px')))
+                "Voyage experimental" => "Voyage expérimental",
+            ), 'label' => 'Type', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('difficulty', ChoiceType::class, array('choices' => array('Facile' => 'Facile', 'Moyen' => 'Moyen', 'Dur' => 'Dur'), 'label' => 'Difficulté', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('price', ChoiceType::class, array('choices' => array('Bas' => 'Bas', 'Moyennement bas' => 'Moyennement bas', 'Moyen' => 'Moyen', 'Moyennement eleve' => 'Moyennement élevé', 'Elevé' => 'Élevé'), 'label' => 'Prix', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('imageTrip', FileType::class, array('data_class' => null, 'label' => 'Image du voyage', 'attr' => array('class' => 'file', 'style' => 'margin-bottom:15px')))
             ->add('traces', HiddenType::class, array('label' => 'map', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px'), 'required' => false))
-            ->add('save', SubmitType::class, array('label' => 'Modifier le voyage', 'attr' => array('class' => 'btn btn-primary', 'style' => 'margin-bottom:15px')))
+            ->add('save', SubmitType::class, array('label' => 'Créer le voyage', 'attr' => array('class' => 'btn btn-trip-submit', 'style' => 'margin-bottom:15px')))
             ->getForm();
 
         $path  = 'uploads/imageTrips/'.$trip->getImageTrip();
