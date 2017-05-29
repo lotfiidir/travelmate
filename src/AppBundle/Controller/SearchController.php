@@ -37,7 +37,7 @@ class SearchController extends Controller
 
         if (!$trips) {
             $notFound = $this->forward('AppBundle:search:not-found.html.twig')->getContent();
-            $result['trips'] = $notFound;
+            $result = $this->notFound($trips)->getContent();
 
         } else {
             //$result['trips'] = $this->getRealTrips($trips);

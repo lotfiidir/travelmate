@@ -43,7 +43,7 @@
                         console.log('resultat');
                         //we need to check if the value is the same
                         $("#loading-image").css("opacity", "0");
-                        //if (value == $(that).val()) {
+                        if (value == $(that).val()) {
                             var result = msg;
                             console.log('reesssuuulltt'+result);
                             entitySelector.append('<li>'+result+'</li>');
@@ -53,10 +53,10 @@
                              console.log('reesssuuulltt'+id);
                              if (key == 'trips') {
                              if (id != 'error') {
-                             entitySelector.append('<li><a href="/trip/details/' + id + '">' + value + '</a></li>');
+                             entitySelector.append('<li><a href="/trip/details/' + id + '">' + value + '</a></li>');*/
                              } else {
                              entitySelector.append('<li class="errorLi">' + value + '</li>');
-                             }
+                             }/*
                              }
                              });
                              });*/

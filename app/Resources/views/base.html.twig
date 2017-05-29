@@ -12,8 +12,9 @@
 
     <!-- Bootstrap core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" rel="stylesheet">
-        {% block stylesheets %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css"
+          rel="stylesheet">
+    {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
@@ -40,10 +41,11 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/">Explorer</a></li>
                 <li><a href="/apropos">Apropos</a></li>
-                <li><a href="/contact">Contact</a></li>
-                <li><a href="/trips/search">Rechercher</a></li>
+                {#<li><a href="/contact">Contact</a></li>#}
+                {#<li><a href="/trips/search">Rechercher</a></li>#}
                 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                    <li id="btn-user" class="connect" style="background: url('{{ asset('uploads/user/profilepics/' ~ app.user.imageName) }}'); background-size: cover">
+                    <li id="btn-user" class="connect"
+                        style="background: url('{{ asset('uploads/user/profilepics/' ~ app.user.imageName) }}'); background-size: cover">
                         <ul id="menu-user">
                             {% if is_granted('ROLE_USER') %}
                                 <li><a href="/trip/creer">Créer votre voyage</a></li>
@@ -92,6 +94,10 @@
 {% block javascripts %}
 
 {% endblock %}
-
+<div id="footer">
+    {% block footer %}
+                <p>&copy; Copyright 2017 - TRAVEL MATE</p>
+    {% endblock %}
+</div>
 </body>
 </html>

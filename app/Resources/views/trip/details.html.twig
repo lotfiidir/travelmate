@@ -2,14 +2,22 @@
 {% block title %}Travel Mate | {{ trip.title }}{% endblock %}
 
 {% block body %}
-    <a href="../../user/details/{{ user.id }}"><img src="{{ asset('uploads/user/profilepics/' ~ user.imageName) }}"
-                                                    alt="image de {{ user.username }}"></a>
-    <a class="btn btn-default" href="/">Retour à la liste</a>
-    <hr>
+
+    <a class="btn btn-default" href="/">Retour à la liste</a><br>
+    <div class="user-image ">
+        <a href="../../user/details/{{ user.id }}"><img src="../../uploads/user/profilepics/{{ user.imageName }}"
+                                                        alt="image de {{ user.username }}" width="100"></a>
+    </div>
     <h2 class="page-header">{{ trip.title }}</h2>
     {% if (trip.imageTrip) %}
-        <img src="{{ asset('uploads/imageTrips/' ~ trip.imageTrip) }}" alt="">
+<div class="col-md-6">
+        <img src="{{ asset('uploads/imageTrips/' ~ trip.imageTrip) }}" style="max-width: 100%;height: auto; max-height: 300px;" alt="">
+</div>
     {% endif %}
+    <div class="col-md-6 map-detail">
+        {{ ivory_google_map(map) }}
+        {{ ivory_google_api([map]) }}
+    </div>
     <div class="row">
         <div class="col-md-6">
             <ul class="list-group">
@@ -35,10 +43,7 @@
                 {{ trip.description }}
             </p>
         </div>
-        <div class="col-md-12">
-            {{ ivory_google_map(map) }}
-            {{ ivory_google_api([map]) }}
-        </div>
+
     </div>
     {% if is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and app.user.username == user.username) %}
         <div class="row">
