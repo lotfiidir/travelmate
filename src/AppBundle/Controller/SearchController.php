@@ -29,19 +29,22 @@ class SearchController extends Controller
         return $this->render('trip/index.html.twig', array(
             'trips' => $trips
         ));*/
+
         $search = $this->getDoctrine()->getManager();
         $reqString = $request->get('q');
         $trips = $search->getRepository('AppBundle:Trip')->findTripByString($reqString);
 
 
-
-        if (!$trips){
+        if (!$trips) {
             $notFound = $this->forward('AppBundle:search:not-found.html.twig')->getContent();
-            $result['trips']['error'] = "Voyage non trouvé";
-            dump($result);
+            $result['trips'] = $notFound;
+
         } else {
             //$result['trips'] = $this->getRealTrips($trips);
-            $result = $this->found($trips)->getContent();
+
+                $result = $this->found($trips)->getContent();
+
+
         }
         /*
         return $this->render('template.html.twig', array(
@@ -49,24 +52,23 @@ class SearchController extends Controller
         ));*/
         return new Response(json_encode($result));
     }
-    public function notFound($trip)
-    {
-        return $this->render('search/not-found.html.twig', array(
-            'trip' => $trip));
-    }
+
     public function found($trips)
     {
-        foreach ($trips as $trip){
+        foreach ($trips as $trip) {
             $trips = $trip;
         }
-        $userId = $trips->getUser()->getId();
-        $user = $this->getDoctrine()
-            ->getRepository('AppBundle:User')
-            ->find($userId);
+
         //var_dump($user);
         return $this->render('search/found.html.twig', array(
             'trip' => $trips));
     }
+
+    public function notFound()
+    {
+        return $this->render('search/not-found.html.twig');
+    }
+
     /**
      * @Route("trips/search", name="search")
      * @Method("GET")
@@ -78,7 +80,7 @@ class SearchController extends Controller
 
     public function getRealTrips($trips)
     {
-        foreach ($trips as $trip){
+        foreach ($trips as $trip) {
             $realTrips[$trip->getId()] = $trip->getTitle();
         }
         return $realTrips;

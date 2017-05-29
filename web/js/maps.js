@@ -69,7 +69,7 @@ window.onload = function () {
         tracePoly.push(polyLast2);
         poly = new google.maps.Polyline({
             path: tracePoly,
-            strokeColor: '#6dabd4',
+            strokeColor: '#4a1942',
             strokeOpacity: 0.8,
             strokeWeight: 3
         });

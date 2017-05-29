@@ -2,13 +2,13 @@
 {% block title %}Travel Mate | {{ trip.title }}{% endblock %}
 
 {% block body %}
-    <a href="../../user/details/{{ user.id }}"><img src="../../uploads/user/profilepics/{{ user.imageName }}"
+    <a href="../../user/details/{{ user.id }}"><img src="{{ asset('uploads/user/profilepics/' ~ user.imageName) }}"
                                                     alt="image de {{ user.username }}"></a>
     <a class="btn btn-default" href="/">Retour à la liste</a>
     <hr>
     <h2 class="page-header">{{ trip.title }}</h2>
     {% if (trip.imageTrip) %}
-        <img src="../../uploads/imageTrips/{{ trip.imageTrip }}" alt="">
+        <img src="{{ asset('uploads/imageTrips/' ~ trip.imageTrip) }}" alt="">
     {% endif %}
     <div class="row">
         <div class="col-md-6">
@@ -40,7 +40,7 @@
             {{ ivory_google_api([map]) }}
         </div>
     </div>
-    {% if is_granted('ROLE_USER') %}
+    {% if is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and app.user.username == user.username) %}
         <div class="row">
             <a href="../../trip/edit/{{ trip.id }}" class="btn btn-success">Modifier</a>
             <a href="../../trip/delete/{{ trip.id }}" class="btn btn-danger">Supprimer</a>

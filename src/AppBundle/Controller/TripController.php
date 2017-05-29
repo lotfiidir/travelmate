@@ -167,11 +167,10 @@ dump($form);
             $description = $form['description']->getData();
             $dateDeparture = $form['date_departure']->getData();
             $dateReturn = $form['date_return']->getData();
-            var_dump($form['destination']->getData());
             $destinationArr = $form['destination']->getData();
             $filter = new AppExtension();
             foreach ($destinationArr as $item) {
-                $destination = $filter->countryNameFilter($item);
+                $destination[] = $filter->countryNameFilter($item);
             }
             $type = $form['type']->getData();
             $difficulty = $form['difficulty']->getData();
@@ -190,7 +189,7 @@ dump($form);
             $trip->setDescription($description);
             $trip->setDateDeparture($dateDeparture);
             $trip->setDateReturn($dateReturn);
-            $trip->setDestination(json_encode($destination));
+            $trip->setDestination($destination);
             $trip->setType($type);
             $trip->setDifficulty($difficulty);
             $trip->setPrice($price);
@@ -249,6 +248,7 @@ dump($form);
             ->find($id);
         $now = new \DateTime('now');
 
+
         $trip->setTitle($trip->getTitle());
         $trip->setDescription($trip->getDescription());
         $trip->setDateDeparture($trip->getDateDeparture());
@@ -263,7 +263,6 @@ dump($form);
         $oldfile = $trip->getImageTrip();
         $trip->setTraces($trip->getTraces());
         dump($trip);
-
         $form = $this->createFormBuilder($trip)
             ->add('title', TextType::class, array('label' => 'Titre', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter un titre...')))
             ->add('description', TextareaType::class, array('label' => 'Description', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'placeholder' => 'Ajouter une description...')))
@@ -291,7 +290,6 @@ dump($form);
             ->add('traces', HiddenType::class, array('label' => 'map', 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px'), 'required' => false))
             ->add('save', SubmitType::class, array('label' => 'Créer le voyage', 'attr' => array('class' => 'btn btn-trip-submit', 'style' => 'margin-bottom:15px')))
             ->getForm();
-
         $path  = 'uploads/imageTrips/'.$trip->getImageTrip();
         $original_name  = $trip->getImagePath();
         $error   = null;
@@ -308,9 +306,11 @@ dump($form);
             $description = $form['description']->getData();
             $dateDeparture = $form['date_departure']->getData();
             $dateReturn = $form['date_return']->getData();
-            $destination = $form['destination']->getData();
+            $destinationArr = $form['destination']->getData();
             $filter = new AppExtension();
-            $destination = $filter->countryNameFilter($destination);
+            foreach ($destinationArr as $item) {
+                $destination[] = $filter->countryNameFilter($item);
+            }
             $type = $form['type']->getData();
             $difficulty = $form['difficulty']->getData();
             $price = $form['price']->getData();
@@ -396,6 +396,7 @@ dump($form);
                 $poly
             );
             $polyline->setIconSequences([]);
+            $polyline->setOption('fillcolor', '#4A1942');
             $polyline->setOption('fillOpacity', 0.5);
             $map->setStylesheetOption('width', '100%');
             $map->getOverlayManager()->addPolyline($polyline);

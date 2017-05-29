@@ -34,15 +34,16 @@ class TripRepository extends \Doctrine\ORM\EntityRepository
      OR t.description LIKE :word
      OR t.destination LIKE :word";
         }*/
-        return $this->getEntityManager()
+//ancieennnnn works********************
+        /*return $this->getEntityManager()
             ->createQuery(
                 'SELECT t
                  FROM AppBundle:Trip t
-                 WHERE t.destination LIKE :str'
+                 WHERE array_values(t.destination) LIKE :str'
             )
             ->setParameter('str', '%' . $str . '%')
-            ->getResult();
-
+            ->getResult();*/
+//***************************************
         /*$string = str_replace(' ', '-', $str);
 
         $stringClean = preg_replace('/[^A-Za-z0-9\-]/', ' ', $string);
@@ -86,5 +87,30 @@ class TripRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery();
 
         $products = $query->getResult();*/
+       /*$em = $this->getEntityManager();
+        $query = $em->createQuery('SELECT t FROM AppBundle:Trip t WHERE t.destination IN (:str)');
+        $query->setParameter('str', array(1, 9));
+        $trips = $query->getResult();*/
+        /*$qb = $this->getEntityManager()->createQueryBuilder('t');
+        $qb->add('select','t.destination');
+        $qb->add('from', 'AppBundle\Entity\Trip');
+        $qb->add('where', $qb->expr()->in('t.destination', array('?1')));
+        $query = $qb->getQuery();*/
+         /*$qb = $this->createQueryBuilder('t');
+         $qb->add('from', 'AppBundle:Trip');
+        $qb->add('where', $qb->expr()->in('t.destination', '?1'))
+            ->setParameter('str', $str);
+        return $qb;*/
+
+        //return $trips;
+
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT t
+                 FROM AppBundle:Trip t
+                 WHERE t.destination LIKE :str'
+            )
+            ->setParameter('str', '%' . $str . '%')
+            ->getResult();
     }
 }
