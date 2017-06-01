@@ -1,0 +1,70 @@
+<div class="sidebar-search">
+    <div class="input-group custom-search-form">
+        <input type="text" id="search" class="form-control" placeholder="Quelle est votre prochaine destination ?">
+    </div>
+    <!-- /input-group -->
+</div>
+<ul class="nav nav-second-level" id="entitiesNav">
+    <img id="loading-image" src="../uploads/ring-alt.svg" />
+</ul>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+
+        if ($('.datepicker').length) {
+            $('.datepicker').datepicker({
+                format: 'dd-mm-yyyy',
+                language: "fr"
+            });
+        }
+        var searchRequest = null;
+        $("#loading-image").css("opacity", "0");
+        $("#search").keyup(function () {
+            var minlength = 3;
+            var that = this;
+            var value = $(this).val();
+            var entitySelector = $("#entitiesNav").html('<img id="loading-image" src="../uploads/ring-alt.svg" />');
+            $("#loading-image").css("opacity", "0");
+            if (value.length >= minlength) {
+                if (searchRequest != null)
+                    searchRequest.abort();
+                searchRequest = $.ajax({
+                    type: "GET",
+                    url: "{{ path('ajax_search') }}",
+                    data: {
+                        'q': value
+                    },
+                    dataType: "json",
+                    beforeSend: function() {
+                        $("#loading-image").css("opacity", "1");
+
+                    },
+                    success: function (msg) {
+                        console.log('resultat');
+                        //we need to check if the value is the same
+                        $("#loading-image").css("opacity", "0");
+                        if (value == $(that).val()) {
+                            var result = msg;
+                            console.log('reesssuuulltt'+result);
+                            entitySelector.append('<li>'+result+'</li>');
+                            /*$.each(result, function (key, arr) {
+
+                             $.each(arr, function (id, value) {
+                             console.log('reesssuuulltt'+id);
+                             if (key == 'trips') {
+                             if (id != 'error') {
+                             entitySelector.append('<li><a href="/trip/details/' + id + '">' + value + '</a></li>');*/
+                             } else {
+                             entitySelector.append('<li class="errorLi">' + value + '</li>');
+                             }/*
+                             }
+                             });
+                             });*/
+                     //   }
+                    }
+                });
+            }
+        });
+    });
+
+</script>

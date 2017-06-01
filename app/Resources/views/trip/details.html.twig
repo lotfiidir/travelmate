@@ -2,15 +2,35 @@
 {% block title %}Travel Mate | {{ trip.title }}{% endblock %}
 
 {% block body %}
-    <a class="btn btn-default" href="/trips">Retour à la liste</a>
-    <hr>
+
+    <a class="btn btn-default" href="/">Retour à la liste</a><br>
+    <div class="user-image ">
+        <a href="../../user/details/{{ user.id }}"><img src="../../uploads/user/profilepics/{{ user.imageName }}"
+                                                        alt="image de {{ user.username }}" width="100"></a>
+    </div>
     <h2 class="page-header">{{ trip.title }}</h2>
+    {% if (trip.imageTrip) %}
+<div class="col-md-6">
+        <img src="{{ asset('uploads/imageTrips/' ~ trip.imageTrip) }}" style="max-width: 100%;height: auto; max-height: 300px;" alt="">
+</div>
+    {% endif %}
+    <div class="col-md-6 map-detail">
+        {{ ivory_google_map(map) }}
+        {{ ivory_google_api([map]) }}
+    </div>
     <div class="row">
         <div class="col-md-6">
             <ul class="list-group">
-                <li class="list-group-item">Destionation: {{ trip.destination|countryName }}</li>
+                <li class="list-group-item">Destionation:
+                    {% for dest in trip.destination %}
+                        <span>{{ dest }}</span>
+                    {% endfor %}
+                </li>
                 <li class="list-group-item">Date de départ:
-                    <strong>{{ trip.dateDeparture|date('d.m.Y, g:i a') }}</strong>
+                    <strong>{{ trip.dateDeparture|date('d.m.Y') }}</strong>
+                </li>
+                <li class="list-group-item">Date Retour:
+                    <strong>{{ trip.dateReturn|date('d.m.Y') }}</strong>
                 </li>
                 <li class="list-group-item">Type de voyage: <strong>{{ trip.type }}</strong></li>
                 <li class="list-group-item">Difficulté: <strong>{{ trip.difficulty }}</strong></li>
@@ -23,9 +43,12 @@
                 {{ trip.description }}
             </p>
         </div>
+
     </div>
-    <div class="row">
-        <a href="../../trip/edit/{{ trip.id }}" class="btn btn-success">Modifier</a>
-        <a href="../../trip/delete/{{ trip.id }}" class="btn btn-danger">Supprimer</a>
-    </div>
+    {% if is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and app.user.username == user.username) %}
+        <div class="row">
+            <a href="../../trip/edit/{{ trip.id }}" class="btn btn-success">Modifier</a>
+            <a href="../../trip/delete/{{ trip.id }}" class="btn btn-danger">Supprimer</a>
+        </div>
+    {% endif %}
 {% endblock %}

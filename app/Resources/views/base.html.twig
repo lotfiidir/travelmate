@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
@@ -13,14 +12,19 @@
 
     <!-- Bootstrap core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    {% block stylesheets %}{% endblock %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css"
+          rel="stylesheet">
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
-
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="{{ asset('js/script.js') }}"></script>
 </head>
 
 <body>
 
-<nav class="navbar navbar-inverse">
+<nav class="navbar">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -30,14 +34,46 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Travel Mate</a>
+            <a class="navbar-brand" href="/"><img src="{{ asset('images/logo.jpg') }}" alt="logo Travel mate"
+                                                  width="80"></a>
         </div>
-        <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="/trips">Home</a></li>
-                <li><a href="/trip/creer">Créer destination</a></li>
+        <ul id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/">Explorer</a></li>
+                <li><a href="/apropos">Apropos</a></li>
+                {#<li><a href="/contact">Contact</a></li>#}
+                {#<li><a href="/trips/search">Rechercher</a></li>#}
+                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    <li id="btn-user" class="connect"
+                        style="background: url('{{ asset('uploads/user/profilepics/' ~ app.user.imageName) }}'); background-size: cover">
+                        <ul id="menu-user">
+                            {% if is_granted('ROLE_USER') %}
+                                <li><a href="/trip/creer">Créer votre voyage</a></li>
+                            {% endif %}
+                            <li><a href="/profile">Profile</a></li>
+                            <li><a href="/profile/edit">Modifier profile</a></li>
+                            {#<p class="navbar-text">{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}</p>#}
+                            <li>
+                                <a href="{{ path('fos_user_security_logout') }}">
+                                    {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li id="btn-user" class="no-connect">
+                        <ul id="menu-user">
+                            <li>
+                                <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                            </li>
+                            <li>
+                                <a href="/register">S'inscrire</a>
+                            </li>
+                        </ul>
+                    </li>
+                {% endif %}
             </ul>
-        </div><!--/.nav-collapse -->
+    </div><!--/.nav-collapse -->
     </div>
 </nav>
 
@@ -55,7 +91,13 @@
     </div>
 </div><!-- /.container -->
 
-{% block javascripts %}{% endblock %}
+{% block javascripts %}
 
+{% endblock %}
+<div id="footer">
+    {% block footer %}
+                <p>&copy; Copyright 2017 - TRAVEL MATE</p>
+    {% endblock %}
+</div>
 </body>
 </html>

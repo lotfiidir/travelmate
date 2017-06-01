@@ -1,18 +1,34 @@
 {% extends 'base.html.twig' %}
 {% block title %}Travel Mate{% endblock %}
 {% block body %}
-    <section>
-        <div class="col-md-12">
-            <h2>section pour rechercher les futures voyages</h2>
-        </div>
+    <section class="col-md-12 search">
+        {{ include ('template.html.twig') }}
     </section>
     {% for trip in trips %}
-        <div class="col-md-4">
-            <h4>{{ trip.title }}</h4>
-            <p>{{ trip.description[:100] }}</p>
-            <p>{{ trip.destination|countryName }}</p>
-            <p>{{ trip.dateDeparture| date("d.m.Y") }}</p>
-            <a href="trip/details/{{ trip.id }}" class="btn btn-primary">Voir</a>
+        <div class="col-md-4 col-trip">
+            {#{% if trip.user %}
+                {{ trip.user.name }}
+            {% endif %}#}
+            {% if trip.user %}
+                <div class="user-image">
+                    <img src="../../uploads/user/profilepics/{{ trip.user.imageName }}"
+                         alt="image de {{ trip.user.username }}" width="100">
+                </div>
+            {% endif %}
+            <div class="trip-image">
+                {% if (trip.imageTrip) %}
+                    <img class="col-md-4" src="{{ asset('uploads/imageTrips/' ~trip.imageTrip) }}" alt="">
+                {% endif %}
+            </div>
+            <div class="trip-content">
+                <h2>{{ trip.title }}</h2>
+                <p>{{ trip.description[:100] }}</p>
+                {% for dest in trip.destination %}
+                    <span>{{ dest }}</span>
+                {% endfor %}
+                <p>{{ trip.dateDeparture| date("d.m.Y") }}</p>
+                <a href="trip/details/{{ trip.id }}" class="voir-trip">Voir</a>
+            </div>
         </div>
     {% endfor %}
 {% endblock %}

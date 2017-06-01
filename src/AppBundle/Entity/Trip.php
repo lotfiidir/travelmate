@@ -3,6 +3,9 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
+use AppBundle\Entity\User;
 
 /**
  * Trip
@@ -19,7 +22,7 @@ class Trip
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
@@ -31,7 +34,7 @@ class Trip
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=255)
+     * @ORM\Column(name="description", type="text")
      */
     private $description;
 
@@ -43,9 +46,16 @@ class Trip
     private $dateDeparture;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_return", type="datetimetz")
+     */
+    private $dateReturn;
+
+    /**
      * @var string
      *
-     * @ORM\Column(name="destination", type="string", length=255)
+     * @ORM\Column(name="destination", type="json_array")
      */
     private $destination;
 
@@ -71,18 +81,41 @@ class Trip
     private $price;
 
     /**
+     * @var UploadedFile
+     *
+     * @ORM\Column(type="string")
+     *
+     * @Assert\NotBlank(message="Veuillez ajoutez une image.")
+     * @Assert\File(mimeTypes={ "image/jpeg", "image/png" })
+     * @Assert\Image(minWidth = 200, maxWidth = 1200, minHeight = 200, maxHeight = 800)
+     *
+     */
+    private $imageTrip;
+    /**
+     * @ORM\Column(type="string")
+     **/
+    private $imagePath;
+
+    /**
      * @var string
      *
-     * @ORM\Column(name="", type="")
+     * @ORM\Column(name="traces", type="text")
      */
-   /* private $imageTrip;*/
 
+    private $traces;
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="create_date", type="datetimetz")
      */
     private $createDate;
+
+    /**
+     *
+     * @ORM\ManyToOne(targetEntity="User", fetch="EAGER")
+     *
+     */
+    private $user;
 
     /**
      * Get id
@@ -164,6 +197,22 @@ class Trip
         $this->dateDeparture = $dateDeparture;
 
         return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateReturn()
+    {
+        return $this->dateReturn;
+    }
+
+    /**
+     * @param \DateTime $dateReturn
+     */
+    public function setDateReturn($dateReturn)
+    {
+        $this->dateReturn = $dateReturn;
     }
 
     /**
@@ -264,24 +313,39 @@ class Trip
     }
 
     /**
-     * Set imageTrip
-     *
-     * @param ..... $imageTrip
+     * @return UploadedFile
+     */
+    public function getImageTrip()
+    {
+        return $this->imageTrip;
+    }
+
+    /**
+     * @param UploadedFile $file - Uploaded File
+     */
+    public function setImageTrip($imageTrip)
+    {
+        $this->imageTrip = $imageTrip;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTraces()
+    {
+        return $this->traces;
+    }
+
+    /**
+     * @param mixed $traces
      *
      * @return Trip
      */
-   /* public function setImageTrip($imageTrip)
+    public function setTraces($traces)
     {
-        $this->imageTrip = $imageTrip;
-    }*/
-
-    /**
-     * @return ....
-     */
-   /* public function getImageTrip()
-    {
-        return $this->imageTrip;
-    }*/
+        $this->traces = $traces;
+    }
 
     /**
      * Get createDate
@@ -306,5 +370,38 @@ class Trip
 
         return $this;
     }
+
+    /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImagePath()
+    {
+        return $this->imagePath;
+    }
+
+    /**
+     * @param mixed $imagePath
+     */
+    public function setImagePath($imagePath)
+    {
+        $this->imagePath = $imagePath;
+    }
+
 }
 
